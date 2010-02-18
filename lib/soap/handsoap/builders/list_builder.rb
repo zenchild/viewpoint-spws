@@ -16,21 +16,7 @@ module Viewpoint
 
       def updates!(batch)
         @node.add('spsoap:updates') do |updates|
-          batchbuilder = ListBuilder.new(updates, {}) do
-            batch!(batch)
-          end
-=begin
-          updates.add('Batch') do |batch|
-            batch.set_attr('OnError','Continue')
-            batch.add('Method') do |meth|
-              meth.set_attr('ID','0,TestNew')
-              meth.set_attr('Cmd','New')
-              meth.add('Field', 'Test List Item') do |field|
-                field.set_attr('Name','Title')
-              end
-            end
-          end
-=end
+          Batch.build(updates,batch)
         end
       end
 
