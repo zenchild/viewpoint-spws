@@ -15,13 +15,13 @@ module Viewpoint
     class ListService < Handsoap::Service
       include SPConfig
       
-      load_config! # Loads the site config from .viewpointrc (See sp_config.rb) into @config
-      endpoint( :uri => @@config.keys.first, :version => 1 )
+      load_config! # Loads the site config from .viewpointrc (See sp_config.rb) into @@config
+      endpoint SPWS_ENDPOINT
 
       SOAP_ACTION_PREFIX='http://schemas.microsoft.com/sharepoint/soap/'
 
       def initialize()
-        @endpoint = @@config.keys.first
+        @endpoint = SPWS_ENDPOINT[:uri]
         if $DEBUG
           @debug = File.new('debug.out', 'w')
           @debug.sync = true

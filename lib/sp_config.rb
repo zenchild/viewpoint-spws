@@ -1,6 +1,7 @@
 module Viewpoint
   module Sharepoint
     module SPConfig
+
       def load_config!(config = "#{ENV['HOME']}/.viewpointrc")
         begin
           @@config = YAML.load_file(config)
