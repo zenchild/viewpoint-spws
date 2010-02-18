@@ -1,9 +1,10 @@
+$: << File.dirname(__FILE__)
 require 'rubygems'
-require 'httpclient'
-gem 'httpclient'
+#require 'httpclient'
+#gem 'httpclient'
 require 'handsoap'
-require 'sp_list'
-require 'sp_config'
+#require 'sp_list'
+#require 'sp_config'
 require 'builders'
 require 'parsers'
 
