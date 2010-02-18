@@ -17,7 +17,8 @@ module Viewpoint
         ep = ask("Which Endpoint are you configuring? ") { |q| q.echo = true }
         user = ask("User: ") { |q| q.echo = true }
         pass = ask("Pass: ") { |q| q.echo = "*"}
-        @@config = {ep => {:user => user, :pass => pass}}
+        @@config = {ep => {:user => user, :pass => pass},
+          :default => {:user => user, :pass => pass}}
         save_config!
       end
 

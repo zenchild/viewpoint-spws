@@ -5,8 +5,8 @@ require 'rubygems'
 require 'handsoap'
 #require 'sp_list'
 #require 'sp_config'
-require 'builders'
-require 'parsers'
+require 'builder'
+require 'parser'
 
 Handsoap.http_driver = :http_client
 
@@ -39,7 +39,11 @@ module Viewpoint
       end
       
       def on_after_create_http_request(req)
-        req.set_auth(@@config[@endpoint][:user],@@config[@endpoint][:pass])
+        if(@@config.has_key?(@endpoint) and ! @@config[@endpoint].nil?)
+           req.set_auth(@@config[@endpoint][:user],@@config[@endpoint][:pass])
+        else
+           req.set_auth(@@config[:default][:user],@@config[:default][:pass])
+        end
         @debug.write "************ REQUEST ************\n#{req.headers}\n*********************************" if $DEBUG
         @debug.write "************ REQUEST ************\n#{req.body}\n*********************************" if $DEBUG
       end
