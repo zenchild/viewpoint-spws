@@ -50,6 +50,6 @@ module Viewpoint
           end
         end
       end
-    end
-  end
-end
+    end # ListBuilder
+  end # Sharepoint
+end # Viewpoint
