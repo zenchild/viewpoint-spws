@@ -18,6 +18,7 @@ module Viewpoint
 
       def initialize()
         @endpoint = SPWS_ENDPOINT[:uri]
+        @site = @endpoint.sub(/_vti_bin.*$/,'')
         if $DEBUG
           @debug = File.new('debug.out', 'w')
           @debug.sync = true
@@ -35,8 +36,8 @@ module Viewpoint
       end
       
       def on_after_create_http_request(req)
-        if(@@config.has_key?(@endpoint) and ! @@config[@endpoint].nil?)
-           req.set_auth(@@config[@endpoint][:user],@@config[@endpoint][:pass])
+        if(@@config.has_key?(@site) and ! @@config[@site].nil?)
+           req.set_auth(@@config[@site][:user],@@config[@site][:pass])
         else
            req.set_auth(@@config[:default][:user],@@config[:default][:pass])
         end

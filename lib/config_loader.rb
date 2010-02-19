@@ -14,7 +14,7 @@ module Viewpoint
 
       def manual_config
         require 'highline/import'
-        ep = ask("Which Endpoint are you configuring? ") { |q| q.echo = true }
+        ep = ask("Which Sharepoint site are you configuring? ") { |q| q.echo = true }
         user = ask("User: ") { |q| q.echo = true }
         pass = ask("Pass: ") { |q| q.echo = "*"}
         @@config = {ep => {:user => user, :pass => pass},
