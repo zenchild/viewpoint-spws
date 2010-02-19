@@ -1,0 +1,16 @@
+--------------------------------------------------------------------------
+                   Viewpoint for Sharepoint Web Services
+--------------------------------------------------------------------------
+This is a web service library and object model for objects within Sharepoint.
+See below for a list of current features.
+--------------------------------------------------------------------------
+CURRENTLY IMPLEMENTED:
+* Lists (_vti_bin/lists.asmx)
+
+
+TO USE:
+* Forthcoming
+
+
+******************** EXAMPLES *********************
+* Forthcoming

@@ -1,3 +1,22 @@
+#############################################################################
+# Copyright © 2010 Dan Wanek <dan.wanek@gmail.com>
+#
+#
+# This file is part of Viewpoint.
+# 
+# Viewpoint is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or (at
+# your option) any later version.
+# 
+# Viewpoint is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General
+# Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License along
+# with Viewpoint.  If not, see <http://www.gnu.org/licenses/>.
+#############################################################################
 $: << File.dirname(__FILE__)
 require 'rubygems'
 require 'handsoap'
@@ -45,6 +64,28 @@ module Viewpoint
         @debug.write "************ REQUEST ************\n#{req.body}\n*********************************" if $DEBUG
       end
       # ********** End Hooks **********
+
+      # CheckOutFile[]
+      def check_out_file(url, writeable = false)
+        soap_action = SOAP_ACTION_PREFIX + 'CheckOutFile'
+        response = invoke('spsoap:CheckOutFile', :soap_action => soap_action) do |root|
+          builder(root) do
+            page_url!(url)
+            checkout_to_local!(writeable.to_s)
+          end
+        end
+      end
+
+      # GetAttachmentCollection[]
+      def get_attachment_collection(list_item)
+        soap_action = SOAP_ACTION_PREFIX + 'GetAttachmentCollection'
+        response = invoke('spsoap:GetAttachmentCollection', :soap_action => soap_action) do |root|
+          builder(root) do
+            list_name!(list_item.list.title)
+            list_item_id!(list_item.id)
+          end
+        end
+      end
 
       # GetList
       # This will someday be used to flesh-out the SPList class and turn @shallow=false.
