@@ -50,6 +50,9 @@ module Viewpoint
       end
       
       def on_response_document(doc)
+        doc.add_namespace 'soap', 'http://schemas.xmlsoap.org/soap/envelope/'
+        doc.add_namespace 'xsd', 'http://www.w3.org/2001/XMLSchema'
+        doc.add_namespace 'xsi', 'http://www.w3.org/2001/XMLSchema-instance'
         doc.add_namespace 'tns', 'http://schemas.microsoft.com/sharepoint/soap/'
         @debug.write "************ RESPONSE ************\n#{doc.to_s}\n*********************************" if $DEBUG
       end
@@ -69,22 +72,24 @@ module Viewpoint
       def check_out_file(url, writeable = false)
         soap_action = SOAP_ACTION_PREFIX + 'CheckOutFile'
         response = invoke('spsoap:CheckOutFile', :soap_action => soap_action) do |root|
-          builder(root) do
+          build!(root) do
             page_url!(url)
             checkout_to_local!(writeable.to_s)
           end
         end
+        parse!(response)
       end
 
       # GetAttachmentCollection[]
       def get_attachment_collection(list_item)
         soap_action = SOAP_ACTION_PREFIX + 'GetAttachmentCollection'
         response = invoke('spsoap:GetAttachmentCollection', :soap_action => soap_action) do |root|
-          builder(root) do
+          build!(root) do
             list_name!(list_item.list.title)
             list_item_id!(list_item.id)
           end
         end
+        parse!(response)
       end
 
       # GetList
@@ -92,11 +97,11 @@ module Viewpoint
       def get_list(list)
         soap_action = SOAP_ACTION_PREFIX + 'GetList'
         response = invoke('spsoap:GetList', :soap_action => soap_action) do |root|
-          builder(root) do
+          build!(root) do
             list_name!(list.title)
           end
         end
-        #raise NotImplementedError
+        #parse!(response)
       end
 
       # GetListCollection[http://msdn.microsoft.com/en-us/library/dd586523(office.11).aspx]
@@ -104,17 +109,19 @@ module Viewpoint
         soap_action = SOAP_ACTION_PREFIX + 'GetListCollection'
         response = invoke('spsoap:GetListCollection', :soap_action => soap_action)
         parse_list_collection(response)
+        #parse!(response)
+        response
       end
       
       # GetListItems[http://msdn.microsoft.com/en-us/library/dd586530(office.11).aspx]
       def get_list_items(list)
         soap_action = SOAP_ACTION_PREFIX + 'GetListItems'
         response = invoke('spsoap:GetListItems', :soap_action => soap_action) do |root|
-          builder(root) do
+          build!(root) do
             list_name!(list.title)
           end
         end
-        #parse_list_items(response)
+        parse!(response)
       end
 
       # GetListItemChanges[http://msdn.microsoft.com/en-us/library/dd586526(office.11).aspx]
@@ -124,11 +131,12 @@ module Viewpoint
       def get_list_item_changes(list, date)
         soap_action = SOAP_ACTION_PREFIX + 'GetListItemChanges'
         response = invoke('spsoap:GetListItemChanges', :soap_action => soap_action) do |root|
-          builder(root) do
+          build!(root) do
             list_name!(list.title)
             since!(date)
           end
         end
+        parse!(response)
       end
 
       # UpdateListItems[http://msdn.microsoft.com/en-us/library/dd586543(office.11).aspx]
@@ -143,11 +151,12 @@ module Viewpoint
       def update_list_items(list, batch = {})
         soap_action = SOAP_ACTION_PREFIX + 'UpdateListItems'
         response = invoke('spsoap:UpdateListItems', :soap_action => soap_action) do |root|
-          builder(root) do
+          build!(root) do
             list_name!(list.title)
             updates!(batch)
           end
         end
+        parse!(response)
       end
       
       # Private Methods (Builders and Parsers)
@@ -161,11 +170,12 @@ module Viewpoint
         lists
       end
       
-      def parse_list_items(xml)
+      def build!(node, opts = {}, &block)
+        ListBuilder.new(node, opts, &block)
       end
 
-      def builder(node, opts = {}, &block)
-        ListBuilder.new(node, opts, &block)
+      def parse!(response)
+        ListParser.new(response)
       end
     
     end # ListService class

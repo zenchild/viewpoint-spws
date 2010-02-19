@@ -17,8 +17,15 @@
 # You should have received a copy of the GNU General Public License along
 # with Viewpoint.  If not, see <http://www.gnu.org/licenses/>.
 #############################################################################
-require 'parsers/list_parser'
-#module Viewpoint
-#  module Sharepoint
-#  end
-#end
+module Viewpoint
+  module Sharepoint
+    class ListParser
+      def initialize(response)
+        # Unwrap SOAP Envelope
+        @response = (response/'//soap:Body/*').first
+        @response_type = 
+      end
+
+    end # ListParser
+  end # Sharepoint
+end # Viewpoint
