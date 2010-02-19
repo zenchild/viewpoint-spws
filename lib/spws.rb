@@ -1,3 +1,3 @@
-require 'sp_config'
-require 'sp_list'
+require 'config_loader'
+require 'model/sp_list'
 require 'soap/soap_provider'

@@ -1,10 +1,6 @@
 $: << File.dirname(__FILE__)
 require 'rubygems'
-#require 'httpclient'
-#gem 'httpclient'
 require 'handsoap'
-#require 'sp_list'
-#require 'sp_config'
 require 'builder'
 require 'parser'
 
@@ -13,7 +9,7 @@ Handsoap.http_driver = :http_client
 module Viewpoint
   module Sharepoint
     class ListService < Handsoap::Service
-      include SPConfig
+      include ConfigLoader
       
       load_config! # Loads the site config from .viewpointrc (See sp_config.rb) into @@config
       endpoint SPWS_ENDPOINT

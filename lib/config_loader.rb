@@ -1,6 +1,6 @@
 module Viewpoint
   module Sharepoint
-    module SPConfig
+    module ConfigLoader
 
       def load_config!(config = "#{ENV['HOME']}/.viewpointrc")
         begin
