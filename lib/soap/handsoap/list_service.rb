@@ -31,7 +31,10 @@ module Viewpoint
       include ConfigLoader
       
       load_config! # Loads the site config from .viewpointrc (See sp_config.rb) into @@config
-      endpoint SPWS_ENDPOINT
+      endpoint SPWS_ENDPOINT = {
+        :uri => "#{SHAREPOINT_SITE}_vti_bin/lists.asmx",
+        :version => 1
+      }
 
       SOAP_ACTION_PREFIX='http://schemas.microsoft.com/sharepoint/soap/'
 
@@ -68,6 +71,31 @@ module Viewpoint
         @debug.write "************ REQUEST ************\n#{req.body}\n*********************************" if $DEBUG
       end
       # ********** End Hooks **********
+
+      # AddList
+      def add_list(title, description, server_template)
+        soap_action = SOAP_ACTION_PREFIX + 'AddList'
+        response = invoke('spsoap:AddList', :soap_action => soap_action) do |root|
+          build!(root) do
+            list_name!(title)
+            description!(description)
+            template_id!(server_template)
+          end
+        end
+        parse!(response)
+      end
+      
+      # DeleteList
+      def delete_list(title)
+        soap_action = SOAP_ACTION_PREFIX + 'DeleteList'
+        response = invoke('spsoap:DeleteList', :soap_action => soap_action) do |root|
+          build!(root) do
+            list_name!(title)
+          end
+        end
+        parse!(response)
+      end
+
 
       # CheckOutFile[]
       def check_out_file(url, writeable = false)

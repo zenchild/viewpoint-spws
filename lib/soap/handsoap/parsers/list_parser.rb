@@ -38,10 +38,19 @@ module Viewpoint
       #def get_list_response
       #end
 
+      def add_list_response(opts)
+        l = (@response/'//tns:List').first
+        return {:id => l['ID'], :title => l['Title'],
+          :description => l['Description'],
+          :template => l['ServerTemplate'],
+          :default_view => l['DefaultViewUrl'],
+          :web_full_url => l['WebFullUrl'] }
+      end
+
       def get_list_collection_response(opts)
         lists = []
         (@response/'//tns:List').each do |l|
-          lists << SPList.new(l['ID'], l['Title'], l['Description'], l['DefaultViewUrl'], l['WebFullUrl'], l['ServerTemplate'])
+          lists << SPList.new(l['Title'], l['Description'], l['ServerTemplate'], l['ID'], l['DefaultViewUrl'], l['WebFullUrl'])
         end
         lists
       end

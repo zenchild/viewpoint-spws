@@ -30,7 +30,11 @@ module Viewpoint
       end
 
       def checkout_to_local!(writeable)
-        @node.add('spsoap:checkoutToLocal',writeable)
+        @node.add('spsoap:checkoutToLocal', writeable)
+      end
+
+      def description!(description)
+        @node.add('spsoap:description', description)
       end
 
       def list_item_id!(id)
@@ -43,6 +47,10 @@ module Viewpoint
 
       def since!(date)
         @node.add('spsoap:since',date)
+      end
+
+      def template_id!(template_id)
+        @node.add('spsoap:templateID',template_id)
       end
 
       def updates!(batch)

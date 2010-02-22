@@ -31,7 +31,10 @@ module Viewpoint
       include ConfigLoader
       
       load_config! # Loads the site config from .viewpointrc (See sp_config.rb) into @@config
-      endpoint SPWS_ENDPOINT
+      endpoint SPWS_ENDPOINT = {
+        :uri => "#{SHAREPOINT_SITE}_vti_bin/webs.asmx",
+        :version => 1
+      }
 
       SOAP_ACTION_PREFIX='http://schemas.microsoft.com/sharepoint/soap/'
 

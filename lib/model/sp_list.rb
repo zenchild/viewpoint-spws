@@ -23,22 +23,44 @@ module Viewpoint
 
       attr_reader :id, :title, :description, :default_view_url, :web_full_url, :server_template
 
-      def initialize(id, title, description, default_view_url=nil, web_full_url=nil, server_template=nil)
-        @id = id
+      def initialize(title, description, server_template, id=nil, default_view_url=nil, web_full_url=nil)
         @title = title
         @description = description
+        @server_template = server_template
+        @id = id
         @default_view_url = default_view_url
         @web_full_url = web_full_url
-        @server_template = server_template
         @shallow = true
 
-        # Create a new object in Sharepoint if the id is :new
+        # Create a new object in Sharepoint if the id is nil
+        sp_add_list! if @id.nil?
       end
 
+      def add_item(title)
+        method = {
+          '0,TestID' => {:Cmd => 'New', :fields => {:Title => title}} }
+        SPWS.instance.list_ws.update_list_items(self, method)
+      end
 
       def items
         SPWS.instance.list_ws.get_list_items(self)
       end
-    end
-  end
-end
+
+      def delete!
+        SPWS.instance.list_ws.delete_list(@title)
+      end
+
+
+      private
+
+      # This is a new list.  Add it to Sharepoint
+      def sp_add_list!
+        list = SPWS.instance.list_ws.add_list(@title, @description, @server_template)
+        @id = list[:id]
+        @default_view_url = list[:default_view]
+        @web_full_url = list[:web_full_url]
+      end
+
+    end # SPList
+  end # Sharepoint
+end # Viewpoint
