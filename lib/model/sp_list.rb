@@ -31,7 +31,10 @@ module Viewpoint
         @web_full_url = web_full_url
         @server_template = server_template
         @shallow = true
+
+        # Create a new object in Sharepoint if the id is :new
       end
+
 
       def items
         SPWS.instance.spws.get_list_items(self)
