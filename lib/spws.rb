@@ -32,14 +32,15 @@ module Viewpoint
     class SPWS
       include Singleton
 
-      attr_reader :spws
+      attr_reader :list_ws
 
       def initialize
-        @spws = ListService.new()
+        @list_ws = ListService.new
+        @web_ws  = WebService.new
       end
 
       def lists
-        @spws.get_list_collection
+        @list_ws.get_list_collection
       end
     end
   end # Sharepoint

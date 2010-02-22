@@ -32,7 +32,7 @@ module Viewpoint
 
       def delete!
         delete_method = { '0,TestID' => {:Cmd => 'Delete', :fields => {:ID=> @id}} }
-        SPWS.instance.spws.update_list_items(@list,delete_method)
+        SPWS.instance.list_ws.update_list_items(@list,delete_method)
       end
 
     end

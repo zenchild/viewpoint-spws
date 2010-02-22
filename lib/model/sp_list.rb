@@ -23,7 +23,7 @@ module Viewpoint
 
       attr_reader :id, :title, :description, :default_view_url, :web_full_url, :server_template
 
-      def initialize(id, title, description, default_view_url, web_full_url, server_template)
+      def initialize(id, title, description, default_view_url=nil, web_full_url=nil, server_template=nil)
         @id = id
         @title = title
         @description = description
@@ -37,7 +37,7 @@ module Viewpoint
 
 
       def items
-        SPWS.instance.spws.get_list_items(self)
+        SPWS.instance.list_ws.get_list_items(self)
       end
     end
   end
