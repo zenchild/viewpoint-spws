@@ -23,7 +23,56 @@ module Viewpoint
       def initialize(response)
         # Unwrap SOAP Envelope
         @response = (response/'//soap:Body/*').first
-        @response_type = 
+        @response_type = @response.native_element.name
+      end
+
+      def parse(opts)
+        resp_method = ruby_case(@response_type)
+        if(method_exists?(resp_method))
+          method(resp_method).call(opts)
+        else
+          @response
+        end
+      end
+      
+      #def get_list_response
+      #end
+
+      def get_list_collection_response(opts)
+        lists = []
+        (@response/'//tns:List').each do |l|
+          lists << SPList.new(l['ID'], l['Title'], l['Description'], l['DefaultViewUrl'], l['WebFullUrl'], l['ServerTemplate'])
+        end
+        lists
+      end
+
+      def get_list_items_response(opts)
+        items = []
+        (@response/'//z:row').each do |r|
+          items << SPListItem.new(opts[:list],r['ows_ID'],r['ows_Title'])
+        end
+        items
+      end
+
+      def update_list_items_response(opts)
+        #results = {}
+        (@response/'//tns:Result').each do |r|
+          #results[r['ID']] = (r/'//tns:ErrorCode').first.to_s
+          return false if (r/'//tns:ErrorCode').first.to_s != '0x00000000'
+        end
+        true
+      end
+
+      private
+
+      # CamelCase to ruby_case
+      # This is used to turn the response message into the correct ruby method for parsing
+      def ruby_case(string)
+        string.split(/(?=[A-Z])/).join('_').downcase
+      end
+      
+      def method_exists?(method_name)
+        return self.methods.include?(method_name)
       end
 
     end # ListParser

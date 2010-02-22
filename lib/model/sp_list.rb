@@ -32,6 +32,10 @@ module Viewpoint
         @server_template = server_template
         @shallow = true
       end
+
+      def items
+        SPWS.instance.spws.get_list_items(self)
+      end
     end
   end
 end

@@ -21,12 +21,20 @@ module Viewpoint
   module Sharepoint
     class SPListItem
 
-      attr_reader :list, :id
+      attr_reader :id, :title
 
-      def initialize(list,id)
+      def initialize(list,id,title)
         @list = list
         @id = id
+        @title = title
+        @shallow = true
       end
+
+      def delete!
+        delete_method = { '0,TestID' => {:Cmd => 'Delete', :fields => {:ID=> @id}} }
+        SPWS.instance.spws.update_list_items(@list,delete_method)
+      end
+
     end
   end
 end

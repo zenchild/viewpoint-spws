@@ -54,6 +54,7 @@ module Viewpoint
         doc.add_namespace 'xsd', 'http://www.w3.org/2001/XMLSchema'
         doc.add_namespace 'xsi', 'http://www.w3.org/2001/XMLSchema-instance'
         doc.add_namespace 'tns', 'http://schemas.microsoft.com/sharepoint/soap/'
+        doc.add_namespace 'z', '#RowsetSchema'
         @debug.write "************ RESPONSE ************\n#{doc.to_s}\n*********************************" if $DEBUG
       end
       
@@ -101,16 +102,15 @@ module Viewpoint
             list_name!(list.title)
           end
         end
-        #parse!(response)
+        parse!(response)
       end
 
       # GetListCollection[http://msdn.microsoft.com/en-us/library/dd586523(office.11).aspx]
       def get_list_collection()
         soap_action = SOAP_ACTION_PREFIX + 'GetListCollection'
         response = invoke('spsoap:GetListCollection', :soap_action => soap_action)
-        parse_list_collection(response)
-        #parse!(response)
-        response
+        #parse_list_collection(response)
+        parse!(response)
       end
       
       # GetListItems[http://msdn.microsoft.com/en-us/library/dd586530(office.11).aspx]
@@ -121,7 +121,7 @@ module Viewpoint
             list_name!(list.title)
           end
         end
-        parse!(response)
+        parse!(response, {:list => list})
       end
 
       # GetListItemChanges[http://msdn.microsoft.com/en-us/library/dd586526(office.11).aspx]
@@ -162,20 +162,13 @@ module Viewpoint
       # Private Methods (Builders and Parsers)
       private
       
-      def parse_list_collection(xml)
-        lists = []
-        (xml/'//tns:List').each do |l|
-          lists << SPList.new(l['ID'], l['Title'], l['Description'], l['DefaultViewUrl'], l['WebFullUrl'], l['ServerTemplate'])
-        end
-        lists
-      end
-      
+            
       def build!(node, opts = {}, &block)
         ListBuilder.new(node, opts, &block)
       end
 
-      def parse!(response)
-        ListParser.new(response)
+      def parse!(response, opts = {})
+        ListParser.new(response).parse(opts)
       end
     
     end # ListService class

@@ -17,6 +17,8 @@
 # You should have received a copy of the GNU General Public License along
 # with Viewpoint.  If not, see <http://www.gnu.org/licenses/>.
 #############################################################################
+require 'singleton'
+#
 require 'config_loader'
 # Load the backend SOAP infrastructure.  Today this is Handsoap.
 require 'soap/soap_provider'
@@ -24,3 +26,21 @@ require 'soap/soap_provider'
 require 'model/sp_list'
 require 'model/sp_list_item'
 require 'model/sp_field'
+
+module Viewpoint
+  module Sharepoint
+    class SPWS
+      include Singleton
+
+      attr_reader :spws
+
+      def initialize
+        @spws = ListService.new()
+      end
+
+      def lists
+        @spws.get_list_collection
+      end
+    end
+  end # Sharepoint
+end # Viewpoint
