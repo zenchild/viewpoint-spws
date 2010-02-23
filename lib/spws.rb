@@ -42,6 +42,11 @@ module Viewpoint
       def lists
         @list_ws.get_list_collection
       end
+
+      def get_list(title)
+        @list_ws.get_list(title)
+      end
+
     end
   end # Sharepoint
 end # Viewpoint

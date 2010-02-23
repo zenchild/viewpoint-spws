@@ -47,6 +47,11 @@ module Viewpoint
           :web_full_url => l['WebFullUrl'] }
       end
 
+      def get_list_response(opts)
+        l = (@response/'//tns:List').first
+        SPList.new(l['Title'], l['Description'], l['ServerTemplate'], l['ID'], l['DefaultViewUrl'], l['WebFullUrl'])
+      end
+
       def get_list_collection_response(opts)
         lists = []
         (@response/'//tns:List').each do |l|
