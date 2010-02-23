@@ -21,7 +21,7 @@ module Viewpoint
   module Sharepoint
     class SPListItem
 
-      attr_reader :id, :title
+      attr_reader :list, :id, :title
 
       def initialize(list,id,title)
         @list = list

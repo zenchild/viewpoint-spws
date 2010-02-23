@@ -17,6 +17,19 @@
 # You should have received a copy of the GNU General Public License along
 # with Viewpoint.  If not, see <http://www.gnu.org/licenses/>.
 #############################################################################
-require 'soap/handsoap/copy_service'
-require 'soap/handsoap/list_service'
-require 'soap/handsoap/web_service'
+module Viewpoint
+  module Sharepoint
+    class CopyBuilder
+
+      def initialize(node, opts, &block)
+        @node, @opts = node, opts
+        instance_eval(&block) if block_given?
+      end
+
+      def url!(url)
+        @node.add('spsoap:Url', url)
+      end
+
+    end # CopyBuilder
+  end # Sharepoint
+end # Viewpoint

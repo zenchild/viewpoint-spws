@@ -19,7 +19,7 @@
 #############################################################################
 module Viewpoint
   module Sharepoint
-    class ListParser
+    class CopyParser
       def initialize(response)
         # Unwrap SOAP Envelope
         @response = (response/'//soap:Body/*').first
@@ -35,57 +35,11 @@ module Viewpoint
         end
       end
       
-      #def get_list_response
-      #end
-
-      def add_list_response(opts)
-        l = (@response/'//tns:List').first
-        return {:id => l['ID'], :title => l['Title'],
-          :description => l['Description'],
-          :template => l['ServerTemplate'],
-          :default_view => l['DefaultViewUrl'],
-          :web_full_url => l['WebFullUrl'] }
-      end
-
-      def get_attachment_collection_response(opts)
-        urls = []
-        (@response/'//tns:Attachment').each do |a|
-          urls << a.to_s
-        end
-        urls
-      end
-
-      def get_list_response(opts)
-        l = (@response/'//tns:List').first
-        SPList.new(l['Title'], l['Description'], l['ServerTemplate'], l['ID'], l['DefaultViewUrl'], l['WebFullUrl'])
-      end
-
-      def get_list_collection_response(opts)
-        lists = []
-        (@response/'//tns:List').each do |l|
-          lists << SPList.new(l['Title'], l['Description'], l['ServerTemplate'], l['ID'], l['DefaultViewUrl'], l['WebFullUrl'])
-        end
-        lists
-      end
-
-      def get_list_items_response(opts)
-        items = []
-        (@response/'//z:row').each do |r|
-          items << SPListItem.new(opts[:list],r['ows_ID'],r['ows_Title'])
-        end
-        items
-      end
-
-      def update_list_items_response(opts)
-        #results = {}
-        (@response/'//tns:Result').each do |r|
-          #results[r['ID']] = (r/'//tns:ErrorCode').first.to_s
-          return false if (r/'//tns:ErrorCode').first.to_s != '0x00000000'
-        end
-        true
-      end
-
       private
+
+      # Parsing Methods
+      # ---------------
+
 
       # CamelCase to ruby_case
       # This is used to turn the response message into the correct ruby method for parsing
@@ -97,6 +51,6 @@ module Viewpoint
         return self.methods.include?(method_name)
       end
 
-    end # ListParser
+    end # CopyParser
   end # Sharepoint
 end # Viewpoint

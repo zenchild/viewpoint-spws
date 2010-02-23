@@ -18,6 +18,7 @@
 # with Viewpoint.  If not, see <http://www.gnu.org/licenses/>.
 #############################################################################
 require 'parsers/list_parser'
+require 'parsers/copy_parser'
 #module Viewpoint
 #  module Sharepoint
 #  end
