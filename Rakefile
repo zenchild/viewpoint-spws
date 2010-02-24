@@ -24,7 +24,7 @@ GEMSPEC = Gem::Specification.new do |gem|
   gem.files = `git ls-files`.split(/\n/)
   gem.require_path = "lib"
 #  gem.rdoc_options	= %w(-x wsdl/ -x test/ -x examples/)
-  gem.extra_rdoc_files = %w(README COPYING.txt)
+  gem.extra_rdoc_files = %w(README.markdown COPYING.txt)
 
   gem.required_ruby_version	= '>= 1.8.7'
   gem.add_runtime_dependency  'handsoap'
