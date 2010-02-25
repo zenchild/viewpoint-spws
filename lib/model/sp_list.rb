@@ -21,7 +21,7 @@ module Viewpoint
   module Sharepoint
     class SPList
 
-      attr_reader :id, :title, :description, :default_view_url, :web_full_url, :server_template
+      attr_accessor :id, :title, :description, :default_view_url, :web_full_url, :server_template, :fields
 
       def initialize(title, description, server_template, id=nil, default_view_url=nil, web_full_url=nil)
         @title = title
@@ -31,9 +31,13 @@ module Viewpoint
         @default_view_url = default_view_url
         @web_full_url = web_full_url
         @shallow = true
+        @fields = {}
 
         # Create a new object in Sharepoint if the id is nil
         sp_add_list! if @id.nil?
+
+        # Add the Sharepoint Fields associated with this list
+        add_fields!
       end
 
       def add_item(title)
@@ -50,6 +54,10 @@ module Viewpoint
         SPWS.instance.list_ws.delete_list(@title)
       end
 
+      def reg_field(f_name, f_type)
+        @fields[f_name.to_sym] = f_type
+      end
+
 
       private
 
@@ -59,6 +67,10 @@ module Viewpoint
         @id = list[:id]
         @default_view_url = list[:default_view]
         @web_full_url = list[:web_full_url]
+      end
+
+      def add_fields!
+        SPWS.instance.list_ws.get_list(@id, self)
       end
 
     end # SPList

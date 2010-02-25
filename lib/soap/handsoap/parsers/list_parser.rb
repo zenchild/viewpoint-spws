@@ -35,9 +35,6 @@ module Viewpoint
         end
       end
       
-      #def get_list_response
-      #end
-
       def add_list_response(opts)
         l = (@response/'//tns:List').first
         return {:id => l['ID'], :title => l['Title'],
@@ -57,7 +54,22 @@ module Viewpoint
 
       def get_list_response(opts)
         l = (@response/'//tns:List').first
-        SPList.new(l['Title'], l['Description'], l['ServerTemplate'], l['ID'], l['DefaultViewUrl'], l['WebFullUrl'])
+        if(opts[:list])
+          list = opts[:list]
+          list.id = l['ID']
+          list.default_view_url = l['DefaultViewUrl']
+          list.web_full_url = ['WebFullUrl']
+        else
+          list = SPList.new(l['Title'], l['Description'], l['ServerTemplate'], l['ID'], l['DefaultViewUrl'], l['WebFullUrl'])
+        end
+        
+        (@response/'//tns:Field').each do |f|
+          unless( f['Hidden'] == 'TRUE' ||  f['Group'] == '_Hidden' || f['ReadOnly'] == 'TRUE' || f['Type'] == nil)
+            list.reg_field(f['Name'], f['Type'])
+          end
+        end
+
+        list
       end
 
       def get_list_collection_response(opts)

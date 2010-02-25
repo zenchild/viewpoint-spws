@@ -123,14 +123,14 @@ module Viewpoint
 
       # GetList
       # This will someday be used to flesh-out the SPList class and turn @shallow=false.
-      def get_list(title)
+      def get_list(title, list = nil)
         soap_action = SOAP_ACTION_PREFIX + 'GetList'
         response = invoke('spsoap:GetList', :soap_action => soap_action) do |root|
           build!(root) do
             list_name!(title)
           end
         end
-        parse!(response)
+        parse!(response, {:list => list})
       end
 
       # GetListCollection[http://msdn.microsoft.com/en-us/library/dd586523(office.11).aspx]
