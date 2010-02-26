@@ -27,7 +27,7 @@ You must set the base site to a Constant named SHAREPOINT_SITE.
 Then it's fairly simple to use after that...
 	require 'spws'
 	include Viewpoint
-	spws = Sharepoint::SPWS.instance
+	spws = SPWS::SPWS.instance
 	# ... do stuff
 
 
@@ -36,7 +36,7 @@ EXAMPLES
 Setup the environment
 	require 'spws'
 	include Viewpoint
-	spws = Sharepoint::SPWS.instance
+	spws = SPWS::SPWS.instance
 
 Get a list by name
 	list = spws.get_list('My Tasks')
