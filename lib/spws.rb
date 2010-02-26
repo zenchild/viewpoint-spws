@@ -26,17 +26,20 @@ require 'soap/soap_provider'
 require 'model/sp_list'
 require 'model/sp_list_item'
 require 'model/sp_field'
+require 'model/sp_user'
 
 module Viewpoint
   module Sharepoint
     class SPWS
       include Singleton
 
-      attr_reader :list_ws
+      attr_reader :list_ws, :web_ws, :copy_ws, :usergroup_ws
 
       def initialize
         @list_ws = ListService.new
         @web_ws  = WebService.new
+        @copy_ws  = CopyService.new
+        @usergroup_ws  = UserGroupService.new
       end
 
       def lists

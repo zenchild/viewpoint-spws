@@ -35,6 +35,9 @@ module Viewpoint
         end
       end
       
+      # Parsing Methods
+      # ---------------
+
       def add_list_response(opts)
         l = (@response/'//tns:List').first
         return {:id => l['ID'], :title => l['Title'],
@@ -96,6 +99,7 @@ module Viewpoint
         end
         true
       end
+
 
       private
 

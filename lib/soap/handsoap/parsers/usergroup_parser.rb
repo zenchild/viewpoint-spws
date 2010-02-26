@@ -19,7 +19,7 @@
 #############################################################################
 module Viewpoint
   module Sharepoint
-    class CopyParser
+    class UserGroupParser
       def initialize(response)
         # Unwrap SOAP Envelope
         @response = (response/'//soap:Body/*').first
@@ -28,6 +28,7 @@ module Viewpoint
 
       def parse(opts)
         resp_method = ruby_case(@response_type)
+        puts "Looking for method #{resp_method}"
         if(method_exists?(resp_method))
           method(resp_method).call(opts)
         else
@@ -35,9 +36,17 @@ module Viewpoint
         end
       end
       
+
       # Parsing Methods
       # ---------------
 
+      def get_user_collection_from_site_response(opts)
+        users = []
+        (@response/'//tns:User').each do |u|
+          users << SPUser.new(u['ID'],u['Name'],u['LoginName'],u['Email'])
+        end
+        users
+      end
 
       private
 
@@ -51,6 +60,6 @@ module Viewpoint
         return self.methods.include?(method_name)
       end
 
-    end # CopyParser
+    end # UserGroupParser
   end # Sharepoint
 end # Viewpoint

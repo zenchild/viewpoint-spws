@@ -17,12 +17,19 @@
 # You should have received a copy of the GNU General Public License along
 # with Viewpoint.  If not, see <http://www.gnu.org/licenses/>.
 #############################################################################
+
+# Lists Web Service
 require 'builders/list_builder'
 require 'builders/batch_builder'
 require 'builders/field_builder'
 require 'builders/method_builder'
 
+# Copy Web Service
 require 'builders/copy_builder'
+
+# UserGroup Web Service
+require 'builders/usergroup_builder'
+
 #module Viewpoint
 #  module Sharepoint
 #  end

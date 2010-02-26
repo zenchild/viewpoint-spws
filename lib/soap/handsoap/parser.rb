@@ -19,6 +19,7 @@
 #############################################################################
 require 'parsers/list_parser'
 require 'parsers/copy_parser'
+require 'parsers/usergroup_parser'
 #module Viewpoint
 #  module Sharepoint
 #  end

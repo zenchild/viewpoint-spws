@@ -17,7 +17,16 @@
 # You should have received a copy of the GNU General Public License along
 # with Viewpoint.  If not, see <http://www.gnu.org/licenses/>.
 #############################################################################
-require 'soap/handsoap/copy_service'
-require 'soap/handsoap/list_service'
-require 'soap/handsoap/web_service'
-require 'soap/handsoap/usergroup_service'
+module Viewpoint
+  module Sharepoint
+    class SPUser
+      attr_reader :id, :name, :login_name, :email
+      def initialize(id, name = nil, login_name = nil, email=nil)
+        @id = id
+        @name = name # CN value in ADS
+        @login_name = login_name # DOMAIN\user form
+        @email = email
+      end
+    end
+  end
+end
