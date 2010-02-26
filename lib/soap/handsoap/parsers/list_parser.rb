@@ -20,21 +20,8 @@
 module Viewpoint
   module SPWS
     class ListParser
-      def initialize(response)
-        # Unwrap SOAP Envelope
-        @response = (response/'//soap:Body/*').first
-        @response_type = @response.native_element.name
-      end
+      include Parser
 
-      def parse(opts)
-        resp_method = ruby_case(@response_type)
-        if(method_exists?(resp_method))
-          method(resp_method).call(opts)
-        else
-          @response
-        end
-      end
-      
       # Parsing Methods
       # ---------------
 
@@ -98,19 +85,6 @@ module Viewpoint
           return false if (r/'//tns:ErrorCode').first.to_s != '0x00000000'
         end
         true
-      end
-
-
-      private
-
-      # CamelCase to ruby_case
-      # This is used to turn the response message into the correct ruby method for parsing
-      def ruby_case(string)
-        string.split(/(?=[A-Z])/).join('_').downcase
-      end
-      
-      def method_exists?(method_name)
-        return self.methods.include?(method_name)
       end
 
     end # ListParser
