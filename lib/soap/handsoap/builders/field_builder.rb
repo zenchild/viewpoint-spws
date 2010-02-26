@@ -18,7 +18,7 @@
 # with Viewpoint.  If not, see <http://www.gnu.org/licenses/>.
 #############################################################################
 module Viewpoint
-  module Sharepoint
+  module SPWS
     module Field
       def Field.build(node,name,value)
         node.add('Field',value) do |field|
@@ -26,5 +26,5 @@ module Viewpoint
         end
       end
     end # Field
-  end # Sharepoint
+  end # SPWS
 end # Viewpoint

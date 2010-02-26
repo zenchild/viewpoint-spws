@@ -18,7 +18,7 @@
 # with Viewpoint.  If not, see <http://www.gnu.org/licenses/>.
 #############################################################################
 module Viewpoint
-  module Sharepoint
+  module SPWS
     class SPUser
       attr_reader :id, :name, :login_name, :email
       def initialize(id, name = nil, login_name = nil, email=nil)
@@ -28,5 +28,5 @@ module Viewpoint
         @email = email
       end
     end
-  end
-end
+  end # SPWS
+end # Viewpoint

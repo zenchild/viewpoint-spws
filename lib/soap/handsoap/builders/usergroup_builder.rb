@@ -18,7 +18,7 @@
 # with Viewpoint.  If not, see <http://www.gnu.org/licenses/>.
 #############################################################################
 module Viewpoint
-  module Sharepoint
+  module SPWS
     class UserGroupBuilder
 
       def initialize(node, opts, &block)
@@ -43,5 +43,5 @@ module Viewpoint
       end
 
     end # UserGroupBuilder
-  end # Sharepoint
+  end # SPWS
 end # Viewpoint

@@ -18,7 +18,7 @@
 # with Viewpoint.  If not, see <http://www.gnu.org/licenses/>.
 #############################################################################
 module Viewpoint
-  module Sharepoint
+  module SPWS
     class SPList
 
       attr_accessor :id, :title, :description, :default_view_url, :web_full_url, :server_template, :fields
@@ -74,5 +74,5 @@ module Viewpoint
       end
 
     end # SPList
-  end # Sharepoint
+  end # SPWS
 end # Viewpoint

@@ -26,7 +26,7 @@ require 'parser'
 Handsoap.http_driver = :http_client
 
 module Viewpoint
-  module Sharepoint
+  module SPWS
     class WebService < Handsoap::Service
       include ConfigLoader
       
@@ -86,5 +86,5 @@ module Viewpoint
       end
     
     end # WebService class
-  end # Sharepoint module
+  end # SPWS module
 end # Viewpoint module

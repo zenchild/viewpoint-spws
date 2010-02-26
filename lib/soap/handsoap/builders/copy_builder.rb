@@ -18,7 +18,7 @@
 # with Viewpoint.  If not, see <http://www.gnu.org/licenses/>.
 #############################################################################
 module Viewpoint
-  module Sharepoint
+  module SPWS
     class CopyBuilder
 
       def initialize(node, opts, &block)
@@ -31,5 +31,5 @@ module Viewpoint
       end
 
     end # CopyBuilder
-  end # Sharepoint
+  end # SPWS
 end # Viewpoint

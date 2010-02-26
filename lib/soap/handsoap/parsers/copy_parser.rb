@@ -18,7 +18,7 @@
 # with Viewpoint.  If not, see <http://www.gnu.org/licenses/>.
 #############################################################################
 module Viewpoint
-  module Sharepoint
+  module SPWS
     class CopyParser
       def initialize(response)
         # Unwrap SOAP Envelope
@@ -52,5 +52,5 @@ module Viewpoint
       end
 
     end # CopyParser
-  end # Sharepoint
+  end # SPWS
 end # Viewpoint

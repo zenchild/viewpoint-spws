@@ -18,7 +18,7 @@
 # with Viewpoint.  If not, see <http://www.gnu.org/licenses/>.
 #############################################################################
 module Viewpoint
-  module Sharepoint
+  module SPWS
     class ListBuilder
       def initialize(node, opts, &block)
         @node, @opts = node, opts
@@ -76,5 +76,5 @@ module Viewpoint
         end
       end
     end # ListBuilder
-  end # Sharepoint
+  end # SPWS
 end # Viewpoint

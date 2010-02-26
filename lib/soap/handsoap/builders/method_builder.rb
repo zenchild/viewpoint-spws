@@ -18,7 +18,7 @@
 # with Viewpoint.  If not, see <http://www.gnu.org/licenses/>.
 #############################################################################
 module Viewpoint
-  module Sharepoint
+  module SPWS
     module Method
       def Method.build(node,id,cmd,fields)
         node.add('Method') do |meth|
@@ -30,5 +30,5 @@ module Viewpoint
         end
       end
     end # Method
-  end # Sharepoint
+  end # SPWS
 end # Viewpoint

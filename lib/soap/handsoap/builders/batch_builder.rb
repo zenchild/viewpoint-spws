@@ -18,7 +18,7 @@
 # with Viewpoint.  If not, see <http://www.gnu.org/licenses/>.
 #############################################################################
 module Viewpoint
-  module Sharepoint
+  module SPWS
     module Batch
       def Batch.build(node, methods)
         node.add('Batch') do |batch|
@@ -28,5 +28,5 @@ module Viewpoint
         end
       end
     end # Batch
-  end # Sharepoint
+  end # SPWS
 end # Viewpoint

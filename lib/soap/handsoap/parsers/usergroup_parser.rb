@@ -18,7 +18,7 @@
 # with Viewpoint.  If not, see <http://www.gnu.org/licenses/>.
 #############################################################################
 module Viewpoint
-  module Sharepoint
+  module SPWS
     class UserGroupParser
       def initialize(response)
         # Unwrap SOAP Envelope
@@ -61,5 +61,5 @@ module Viewpoint
       end
 
     end # UserGroupParser
-  end # Sharepoint
+  end # SPWS
 end # Viewpoint

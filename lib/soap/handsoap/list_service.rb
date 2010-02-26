@@ -26,7 +26,7 @@ require 'parser'
 Handsoap.http_driver = :http_client
 
 module Viewpoint
-  module Sharepoint
+  module SPWS
     class ListService < Handsoap::Service
       include ConfigLoader
       
@@ -153,7 +153,7 @@ module Viewpoint
       end
 
       # GetListItemChanges[http://msdn.microsoft.com/en-us/library/dd586526(office.11).aspx]
-      # list: Viewpoint::Sharepoint::SPList
+      # list: Viewpoint::SPWS::SPList
       # date: String in ISO8601 (UTC) format
       #   Example.  (DateTime.now - 2).new_offset(0).to_s will print out a date 2 days earlier
       def get_list_item_changes(list, date)
@@ -168,7 +168,7 @@ module Viewpoint
       end
 
       # UpdateListItems[http://msdn.microsoft.com/en-us/library/dd586543(office.11).aspx]
-      # list: Viewpoint::Sharepoint::SPList
+      # list: Viewpoint::SPWS::SPList
       # TODO: Implement a Hash input that will convert to a Batch Method in the WS
       # batch: a hash of Method attributes and fields
       #   {
@@ -200,5 +200,5 @@ module Viewpoint
       end
     
     end # ListService class
-  end # Sharepoint module
+  end # SPWS module
 end # Viewpoint module

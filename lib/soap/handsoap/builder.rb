@@ -31,6 +31,6 @@ require 'builders/copy_builder'
 require 'builders/usergroup_builder'
 
 #module Viewpoint
-#  module Sharepoint
-#  end
-#end
+#  module SPWS
+#  end # SPWS
+#end # Viewpoint

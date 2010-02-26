@@ -29,7 +29,7 @@ require 'model/sp_field'
 require 'model/sp_user'
 
 module Viewpoint
-  module Sharepoint
+  module SPWS
     class SPWS
       include Singleton
 
@@ -51,5 +51,5 @@ module Viewpoint
       end
 
     end
-  end # Sharepoint
+  end # SPWS
 end # Viewpoint

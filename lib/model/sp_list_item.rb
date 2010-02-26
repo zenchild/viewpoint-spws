@@ -18,7 +18,7 @@
 # with Viewpoint.  If not, see <http://www.gnu.org/licenses/>.
 #############################################################################
 module Viewpoint
-  module Sharepoint
+  module SPWS
     class SPListItem
 
       attr_reader :list, :id, :title
@@ -36,5 +36,5 @@ module Viewpoint
       end
 
     end
-  end
-end
+  end # SPWS
+end # Viewpoint

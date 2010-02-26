@@ -18,7 +18,7 @@
 # with Viewpoint.  If not, see <http://www.gnu.org/licenses/>.
 #############################################################################
 module Viewpoint
-  module Sharepoint
+  module SPWS
     module ConfigLoader
 
       def load_config!(config = "#{ENV['HOME']}/.viewpointrc")
@@ -48,5 +48,5 @@ module Viewpoint
       end
 
     end
-  end # Sharepoint
+  end # SPWS
 end # Viewpoint
