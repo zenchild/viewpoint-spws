@@ -27,6 +27,7 @@ Handsoap.http_driver = :http_client
 
 module Viewpoint
   module SPWS
+    module SOAP
     class CopyService < Handsoap::Service
       include ConfigLoader
       
@@ -98,5 +99,6 @@ module Viewpoint
       end
     
     end # CopyService class
+    end # SOAP module
   end # SPWS module
 end # Viewpoint module

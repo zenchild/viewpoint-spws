@@ -36,10 +36,10 @@ module Viewpoint
       attr_reader :list_ws, :web_ws, :copy_ws, :usergroup_ws
 
       def initialize
-        @list_ws = ListService.new
-        @web_ws  = WebService.new
-        @copy_ws  = CopyService.new
-        @usergroup_ws  = UserGroupService.new
+        @list_ws = SOAP::ListService.new
+        @web_ws  = SOAP::WebService.new
+        @copy_ws  = SOAP::CopyService.new
+        @usergroup_ws  = SOAP::UserGroupService.new
       end
 
       def lists
