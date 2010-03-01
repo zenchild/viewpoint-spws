@@ -30,6 +30,9 @@ require 'builders/copy_builder'
 # UserGroup Web Service
 require 'builders/usergroup_builder'
 
+# SiteData Web Service
+require 'builders/site_data_builder'
+
 #module Viewpoint
 #  module SPWS
 #  end # SPWS

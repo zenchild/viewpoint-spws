@@ -21,13 +21,14 @@ module Viewpoint
   module SPWS
     class SPListItem
 
-      attr_reader :list, :id, :title
+      attr_reader :list, :id, :title, :fields
 
       def initialize(list,id,title)
         @list = list
         @id = id
         @title = title
         @shallow = true
+        @fields = {}
       end
 
       def delete!

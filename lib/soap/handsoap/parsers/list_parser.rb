@@ -36,8 +36,8 @@ module Viewpoint
 
         def get_attachment_collection_response(opts)
           urls = []
-          (@response/'//tns:Attachment').each do |a|
-            urls << a.to_s
+          (@response/'//tns:Attachment').each do |attachment|
+            urls << attachment.to_s
           end
           urls
         end
@@ -53,9 +53,9 @@ module Viewpoint
             list = SPList.new(l['Title'], l['Description'], l['ServerTemplate'], l['ID'], l['DefaultViewUrl'], l['WebFullUrl'])
           end
 
-          (@response/'//tns:Field').each do |f|
-            unless( f['Hidden'] == 'TRUE' ||  f['Group'] == '_Hidden' || f['ReadOnly'] == 'TRUE' || f['Type'] == nil)
-              list.reg_field(f['Name'], f['Type'])
+          (@response/'//tns:Field').each do |field|
+            unless( field['Hidden'] == 'TRUE' ||  field['Group'] == '_Hidden' || field['ReadOnly'] == 'TRUE' || field['Type'] == nil)
+              list.reg_field(field['Name'], field['Type'])
             end
           end
 
@@ -64,25 +64,29 @@ module Viewpoint
 
         def get_list_collection_response(opts)
           lists = []
-          (@response/'//tns:List').each do |l|
-            lists << SPList.new(l['Title'], l['Description'], l['ServerTemplate'], l['ID'], l['DefaultViewUrl'], l['WebFullUrl'])
+          (@response/'//tns:List').each do |list|
+            lists << SPList.new(list['Title'], list['Description'], list['ServerTemplate'], list['ID'], list['DefaultViewUrl'], list['WebFullUrl'])
           end
           lists
         end
 
         def get_list_items_response(opts)
           items = []
-          (@response/'//z:row').each do |r|
-            items << SPListItem.new(opts[:list],r['ows_ID'],r['ows_Title'])
+          (@response/'//z:row').each do |row|
+            nitem = SPListItem.new(opts[:list],row['ows_ID'],row['ows_Title'])
+            row.native_element.attributes.each_pair do |k,v|
+              nitem.fields[k.sub(/^ows_/,'')] = v.value
+            end
+            items << nitem
           end
           items
         end
 
         def update_list_items_response(opts)
           #results = {}
-          (@response/'//tns:Result').each do |r|
-            #results[r['ID']] = (r/'//tns:ErrorCode').first.to_s
-            return false if (r/'//tns:ErrorCode').first.to_s != '0x00000000'
+          (@response/'//tns:Result').each do |result|
+            #results[result['ID']] = (result/'//tns:ErrorCode').first.to_s
+            return false if (result/'//tns:ErrorCode').first.to_s != '0x00000000'
           end
           true
         end
