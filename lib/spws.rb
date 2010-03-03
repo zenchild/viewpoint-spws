@@ -33,13 +33,14 @@ module Viewpoint
     class SPWS
       include Singleton
 
-      attr_reader :list_ws, :web_ws, :copy_ws, :usergroup_ws
+      attr_reader :list_ws, :web_ws, :copy_ws, :usergroup_ws, :sitedata_ws
 
       def initialize
         @list_ws = SOAP::ListService.new
         @web_ws  = SOAP::WebService.new
         @copy_ws  = SOAP::CopyService.new
         @usergroup_ws  = SOAP::UserGroupService.new
+        @sitedata_ws = SOAP::SiteDataService.new
       end
 
       def lists

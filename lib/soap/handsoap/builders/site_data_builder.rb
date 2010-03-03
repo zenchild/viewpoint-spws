@@ -26,6 +26,10 @@ module Viewpoint
           instance_eval(&block) if block_given?
         end
 
+        def list_name!(title)
+          @node.add('spsoap:strListName',title)
+        end
+
       end # SiteDataBuilder
     end # SOAP
   end # SPWS

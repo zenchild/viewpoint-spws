@@ -75,6 +75,17 @@ module Viewpoint
 
       # ********** End Hooks **********
 
+      # GetListItems[http://msdn.microsoft.com/en-us/library/dd586530(office.11).aspx]
+      def get_list_items(list)
+        soap_action = SOAP_ACTION_PREFIX + 'GetListItems'
+        response = invoke('spsoap:GetListItems', :soap_action => soap_action) do |root|
+          build!(root) do
+            list_name!(list.id)
+          end
+        end
+        #parse!(response, {:list => list})
+        response
+      end
       
       # Private Methods (Builders and Parsers)
       private
