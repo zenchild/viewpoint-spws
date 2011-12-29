@@ -27,5 +27,5 @@ module Viewpoint
 end
 
 require 'spws/connection'
-require 'spws/models/lists'
-require 'spws/models/list'
+require 'spws/websvc/lists'
+require 'spws/types/list'
