@@ -17,23 +17,14 @@
 =end
 
 # This class represents the Sharepoint Lists Web Service.
-# @see http://msdn.microsoft.com/en-us/library/ms774654.aspx
+# @see http://msdn.microsoft.com/en-us/library/ms774654(v=office.12).aspx
 class Viewpoint::SPWS::Lists
-  include Viewpoint::SPWS
+  include Viewpoint::SPWS::WebServiceBase
 
-  NAMESPACES = {
-    'xmlns:soap'  => 'http://schemas.xmlsoap.org/soap/envelope/',
-    'xmlns:xsi'   => 'http://www.w3.org/2001/XMLSchema-instance',
-    'xmlns:xsd'   => 'http://www.w3.org/2001/XMLSchema',
-    'xmlns:spws'  => 'http://schemas.microsoft.com/sharepoint/soap/',
-  }.freeze
-
-  WS_ENDPOINT = '_vti_bin/Lists.asmx'.freeze
-
-  # @param [Viewpoint::SPWS::Connection] spcon A connection to a Sharepoint Site
   def initialize(spcon)
-    @spcon = spcon
-    raise "Auth failure" unless(@spcon.authenticate(WS_ENDPOINT))
+    @default_ns  = 'http://schemas.microsoft.com/sharepoint/soap/'
+    @ws_endpoint = '_vti_bin/Lists.asmx'
+    super
   end
 
   # Returns all the lists for a Sharepoint site.
@@ -43,11 +34,13 @@ class Viewpoint::SPWS::Lists
     soapmsg = build_soap_envelope do |type, builder|
       if(type == :header)
       else
-        builder['spws'].GetListCollection
+        builder.GetListCollection {
+          builder.parent.default_namespace = @default_ns
+        }
       end
     end
     soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
-    ns = {"xmlns"=>"http://schemas.microsoft.com/sharepoint/soap/"}
+    ns = {"xmlns"=> @default_ns}
     lists = []
     soaprsp.xpath('//xmlns:Lists/xmlns:List', ns).each do |l|
       lists << List.new(l)
@@ -60,28 +53,5 @@ class Viewpoint::SPWS::Lists
     lists
   end
   alias :get_lists :get_list_collection
-
-
-  private
-
-  def build_soap_envelope
-    new_ent = Nokogiri::XML::Builder.new do |xml|
-      xml.Envelope(NAMESPACES) do |ent|
-        xml.parent.namespace = xml.parent.namespace_definitions.find{|ns|ns.prefix=="soap"}
-        ent['soap'].Header {
-          yield(:header, ent) if block_given?
-        }
-        ent['soap'].Body {
-          yield(:body, ent) if block_given?
-        }
-      end
-    end
-  end
-
-  # Send the SOAP request to the endpoint
-  # @param [String] soapmsg an XML formatted string
-  def send_soap_request(soapmsg)
-    @spcon.post(WS_ENDPOINT, soapmsg)
-  end
 
 end
