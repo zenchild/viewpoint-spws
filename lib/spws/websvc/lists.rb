@@ -54,4 +54,49 @@ class Viewpoint::SPWS::Lists
   end
   alias :get_lists :get_list_collection
 
+
+  # Retrieve a specific Sharepoint List
+  # @see http://msdn.microsoft.com/en-us/library/lists.lists.getlist(v=office.12).aspx
+  # @param [String] list title or the GUID for the list
+  # @return [Viewpoint::SPWS::List]
+  def get_list(list)
+    soapmsg = build_soap_envelope do |type, builder|
+      if(type == :header)
+      else
+        builder.GetList {
+          builder.parent.default_namespace = @default_ns
+          builder.listName(list)
+        }
+      end
+    end
+    soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
+    ns = {"xmlns"=> @default_ns}
+    List.new(soaprsp.xpath('//xmlns:GetListResult/xmlns:List', ns).first)
+  end
+
+  # Get List Items based on certain parameters
+  # @see http://msdn.microsoft.com/en-us/library/lists.lists.getlistitems(v=office.12).aspx
+  # @param [String] list title or the GUID for the list
+  # @param [Hash] parms
+  #   :view_name GUID for the view surrounded by curly braces 
+  def get_list_items(list, parms = {})
+    soapmsg = build_soap_envelope do |type, builder|
+      if(type == :header)
+      else
+        builder.GetListItems {
+          builder.parent.default_namespace = @default_ns
+          builder.listName(list)
+          builder.viewName(parms[:view_name])
+        }
+      end
+    end
+    soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
+    ns = {"xmlns"=> @default_ns}
+    ns = {'xmlns:z' => "#RowsetSchema"}
+    items = []
+    soaprsp.xpath('//z:row', ns).each do |li|
+      items << ListItem.new(li)
+    end
+    items
+  end
 end

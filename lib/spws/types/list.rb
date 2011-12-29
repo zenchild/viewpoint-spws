@@ -16,7 +16,7 @@
   limitations under the License.
 =end
 
-# This class represents a Sharepoint List Item returned from the Lists Web Service
+# This class represents a Sharepoint List returned from the Lists Web Service
 # @see http://msdn.microsoft.com/en-us/library/ms434081(v=office.12).aspx
 class Viewpoint::SPWS::List
 

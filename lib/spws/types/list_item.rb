@@ -15,31 +15,22 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 =end
-require 'kconv' if(RUBY_VERSION.start_with? '1.9') # bug in rubyntlm with ruby 1.9.x
-require 'httpclient'
-require 'uri'
-require 'nokogiri'
-require 'logging'
 
-# This is the base module for all other classes
-module Viewpoint
-  module SPWS
-    attr_reader :logger
-    Logging.logger.root.level = :debug
-    Logging.logger.root.appenders = Logging.appenders.stdout
+# This class represents a Sharepoint ListItem returned from the Lists Web Service
+# @see 
+class Viewpoint::SPWS::ListItem
 
-    def self.root_logger
-      Logging.logger.root
-    end
+  attr_reader :file_name, :editor, :guid
+
+  # @param [Nokogiri::XML::Element] xml the List element we are building from
+  def initialize(xml)
+    @file_name  = xml['ows_LinkFilename']
+    @editor     = xml['ows_Editor'].split('#').last
+    @guid       = xml['ows_UniqueId'].split('#').last
+    #@xmldoc = xml
+  end
+
+  def hidden?
+    @hidden
   end
 end
-
-require 'spws/connection'
-require 'spws/websvc/web_service_base'
-# Lists Web Service
-require 'spws/websvc/lists'
-require 'spws/types/list'
-require 'spws/types/list_item'
-# User and Groups Web Service
-require 'spws/websvc/user_group'
-require 'spws/types/user'
