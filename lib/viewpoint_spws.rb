@@ -26,6 +26,6 @@ module Viewpoint
   end
 end
 
-require 'connection'
-require 'models/lists'
-require 'models/list'
+require 'spws/connection'
+require 'spws/models/lists'
+require 'spws/models/list'
