@@ -25,22 +25,48 @@ class Viewpoint::SPWS::ListItem
 
   # @param [Nokogiri::XML::Element] xml the List element we are building from
   def initialize(xml)
-    @file_name  = xml['ows_LinkFilename']
-    @file_ref   = get_mfield(xml['ows_FileRef'])
-    @editor     = get_mfield(xml['ows_Editor'])
-    @guid       = get_mfield(xml['ows_UniqueId'])
-    @object_type    = get_mfield(xml['ows_FSObjType'])
-    @created_date   = DateTime.parse(get_mfield(xml['ows_Created_x0020_Date']))
-    @modified_date  = DateTime.parse(get_mfield(xml['ows_Last_x0020_Modified']))
-    @meta_info  = xml['ows_MetaInfo']
-    #@xmldoc = xml
+    @xmldoc = xml
+    set_field   :@file_name, 'ows_LinkFilename'
+    set_field   :@meta_info, 'ows_MetaInfo'
+    set_field   :@link_title, 'ows_LinkTitle'
+    set_field   :@title, 'ows_Title'
+    set_field   :@status, 'ows_Status'
+    set_field   :@priority, 'ows_Priority'
+    set_field   :@percent_complete, 'ows_PercentComplete'
+    set_field   :@due_date, 'ows_DueDate'
+    #if(defined? @due_date && @due_date)
+    #  @due_date = DateTime.parse(@due_date)
+    #end
+    set_mfield  :@assigned_to, 'ows_AssignedTo'
+    set_mfield  :@file_ref, 'ows_FileRef'
+    set_mfield  :@editor, 'ows_Editor'
+    set_mfield  :@guid, 'ows_UniqueId'
+    set_mfield  :@object_type, 'ows_FSObjType'
+    set_mfield  :@created_date, 'ows_Created_x0020_Date'
+    #if(defined? @created_date && @created_date)
+    #  @created_date = DateTime.parse(@created_date)
+    #end
+    set_mfield  :@modified_date, 'ows_Last_x0020_Modified'
+    #if(defined? @modified_date && @modified_date)
+    #  @modified_date = DateTime.parse(@modified_date)
+    #end
+
+    @xmldoc = nil
   end
 
 
   private
 
   # Parse a Sharepoint managed field
-  def get_mfield(name)
-    name.split(';#').last
+  # @param [Symbol] vname The instance variable we will set the value to if it exists
+  # @param [String] fname The field name to check for
+  def set_mfield(vname, fname)
+    instance_variable_set vname, @xmldoc[fname].split(';#').last if @xmldoc[fname]
+  end
+
+  # @param [Symbol] vname The instance variable we will set the value to if it exists
+  # @param [String] fname The field name to check for
+  def set_field(vname, fname)
+    instance_variable_set vname, @xmldoc[fname] if @xmldoc[fname]
   end
 end
