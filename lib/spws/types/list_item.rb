@@ -20,17 +20,27 @@
 # @see 
 class Viewpoint::SPWS::ListItem
 
-  attr_reader :file_name, :editor, :guid
+  attr_reader :file_name, :file_ref, :editor, :guid, :object_type
+  attr_reader :created_date, :modified_date
 
   # @param [Nokogiri::XML::Element] xml the List element we are building from
   def initialize(xml)
     @file_name  = xml['ows_LinkFilename']
-    @editor     = xml['ows_Editor'].split('#').last
-    @guid       = xml['ows_UniqueId'].split('#').last
+    @file_ref   = get_mfield(xml['ows_FileRef'])
+    @editor     = get_mfield(xml['ows_Editor'])
+    @guid       = get_mfield(xml['ows_UniqueId'])
+    @object_type    = get_mfield(xml['ows_FSObjType'])
+    @created_date   = DateTime.parse(get_mfield(xml['ows_Created_x0020_Date']))
+    @modified_date  = DateTime.parse(get_mfield(xml['ows_Last_x0020_Modified']))
+    @meta_info  = xml['ows_MetaInfo']
     #@xmldoc = xml
   end
 
-  def hidden?
-    @hidden
+
+  private
+
+  # Parse a Sharepoint managed field
+  def get_mfield(name)
+    name.split(';#').last
   end
 end
