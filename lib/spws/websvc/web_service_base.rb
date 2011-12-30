@@ -53,10 +53,10 @@ module Viewpoint::SPWS::WebServiceBase
   # Send the SOAP request to the endpoint
   # @param [String] soapmsg an XML formatted string
   def send_soap_request(soapmsg)
-    #@log.debug "Sending SOAP Request:\n----------------\n#{soapmsg}\n----------------"
+    @log.debug "Sending SOAP Request:\n----------------\n#{soapmsg}\n----------------"
     respmsg = @spcon.post(@ws_endpoint, soapmsg)
-    #@log.debug "Received SOAP Response:\n----------------\n#{Nokogiri::XML(respmsg).to_xml}\n----------------"
-    #respmsg
+    @log.debug "Received SOAP Response:\n----------------\n#{Nokogiri::XML(respmsg).to_xml}\n----------------"
+    respmsg
   end
 
 end
