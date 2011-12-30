@@ -52,6 +52,9 @@ class Viewpoint::SPWS::Connection
     case resp.status
     when 200
       resp.body
+    when 302
+      # @todo redirect
+      raise "Unhandled HTTP Redirect"
     when 500
       if resp.headers['Content-Type'].include?('xml')
         err_string, err_code = parse_soap_error(resp.body)
