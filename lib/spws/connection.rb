@@ -1,6 +1,7 @@
 class Viewpoint::SPWS::Connection
   include Viewpoint::SPWS
 
+  attr_reader :site_base
   # @param [String] site_base the base URL of the site not including the
   #   web service part.
   #   @example https://<site>/personal/myname
@@ -33,7 +34,7 @@ class Viewpoint::SPWS::Connection
   # @return [String] If the request is successful (200) it returns the body of
   #   the response.
   def get(websvc)
-    check_response( @httpcli.get(@site_base + websvc) )
+    check_response( @httpcli.get(@site_base + URI.encode(websvc)) )
   end
 
   # Send a POST to the web service
