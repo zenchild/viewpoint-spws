@@ -25,6 +25,16 @@ class Viewpoint::SPWS::ListItem
 
   # @param [Nokogiri::XML::Element] xml the List element we are building from
   def initialize(xml)
+    parse_xml_fields(xml)
+  end
+
+
+  private
+
+
+  # Parse the fields out of the passed XML document.
+  # @param[Nokogiri::XML::Element] xml
+  def parse_xml_fields(xml)
     @xmldoc = xml
     set_field   :@file_name, 'ows_LinkFilename'
     set_field   :@meta_info, 'ows_MetaInfo'
@@ -54,8 +64,6 @@ class Viewpoint::SPWS::ListItem
     @xmldoc = nil
   end
 
-
-  private
 
   # Parse a Sharepoint managed field
   # @param [Symbol] vname The instance variable we will set the value to if it exists
