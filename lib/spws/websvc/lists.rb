@@ -149,6 +149,49 @@ class Viewpoint::SPWS::Lists
   end
 
 
+  # Adds, deletes, or updates the specified items in a list
+  # @see http://msdn.microsoft.com/en-us/library/lists.lists.updatelistitems(v=office.12).aspx
+  # @param [String] list title or the GUID for the list
+  # @param [Hash] updates
+  # @option updates [String] :view_name ('') GUID for the view without curly braces 
+  #   If nothing is passed it used the default of the View
+  # @option updates [String] :on_error ('Continue') What to do if an error ocurrs. It must
+  #   be either 'Return' or 'Contiue'
+  # @option updates [String] :list_version ('') The version of the list we wish to modify
+  # @option updates [String] :version ('') The version of Sharepoint we are acting on
+  def update_list_items(list, updates = {})
+    # Set Default values
+    updates[:view_name] = '' unless updates.has_key?(:view_name)
+    updates[:on_error] = 'Continue' unless updates.has_key?(:on_error)
+    updates[:list_version] = '' unless updates.has_key?(:list_version)
+    updates[:version] = '' unless updates.has_key?(:version)
+
+    soapmsg = build_soap_envelope do |type, builder|
+      if(type == :header)
+      else
+        builder.UpdateListItems {
+          builder.parent.default_namespace = @default_ns
+          builder.listName(list)
+
+          builder.updates {
+            builder.Batch(:ViewName => updates[:view_name],
+                          :OnError  => updates[:on_error],
+                          :ListVersion  => updates[:list_version],
+                          :Version  => updates[:version]) {
+              builder.parent.default_namespace = ''
+              if block_given?
+                yield builder
+              end
+            }
+          }
+      end
+    end
+
+    soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
+    ns = {"xmlns"=> @default_ns}
+  end
+
+
   # ------------------------- Helper Methods ------------------------- #
 
   # Retrieve a file from Sharepoint. This is not a standard Web Service method, buth
