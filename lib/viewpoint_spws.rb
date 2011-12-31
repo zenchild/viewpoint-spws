@@ -20,6 +20,7 @@ require 'httpclient'
 require 'uri'
 require 'nokogiri'
 require 'logging'
+require 'pathname'
 
 # This is the base module for all other classes
 module Viewpoint

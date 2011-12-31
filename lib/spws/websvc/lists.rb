@@ -130,6 +130,7 @@ class Viewpoint::SPWS::Lists
               builder.Folder(opts[:folder])
               builder.ViewAttributes(:Scope => 'Recursive') if opts[:recursive]
               builder.DateInUtc('True') if opts[:date_in_utc]
+              builder.IncludeAttachmentUrls('True')
             }
           }
           # @todo Is this worth supporting???
@@ -145,5 +146,25 @@ class Viewpoint::SPWS::Lists
       items << ListItem.new(li)
     end
     items
+  end
+
+
+  # ------------------------- Helper Methods ------------------------- #
+
+  # Retrieve a file from Sharepoint. This is not a standard Web Service method, buth
+  # rather a convenience method that is part of ViewpointSPWS.
+  # @param [String] file_ref The fileref property from a ListItem object
+  # @return [String] A String representing the bytestream of a file. You should be able
+  #   to write it out to a file with something like this:
+  # @example
+  #   resp = listws.get_file(listitem.file_ref)
+  #   File.open(listitem.file_name,'w+') do |f|
+  #     f.write(resp)
+  #   end
+  def get_file(file_ref)
+    p1 = Pathname.new @spcon.site_base.request_uri
+    p2 = Pathname.new "/#{file_ref}"
+    target = p2.relative_path_from p1
+    @spcon.get(target.to_s)
   end
 end
