@@ -148,7 +148,6 @@ class Viewpoint::SPWS::Lists
     items
   end
 
-
   # Adds, deletes, or updates the specified items in a list
   # @see http://msdn.microsoft.com/en-us/library/lists.lists.updatelistitems(v=office.12).aspx
   # @param [String] list title or the GUID for the list
@@ -184,6 +183,7 @@ class Viewpoint::SPWS::Lists
               end
             }
           }
+        }
       end
     end
 
