@@ -4,12 +4,11 @@ class Viewpoint::SPWS::Connection
   attr_reader :site_base
   # @param [String] site_base the base URL of the site not including the
   #   web service part.
-  #   @example https://<site>/personal/myname
+  #   @example https://<site>/mysite/<default.aspx>
   def initialize(site_base)
     @log = Logging.logger[self.class.name.to_s.to_sym]
     @httpcli = HTTPClient.new
-    site_base = site_base.end_with?('/') ? site_base : site_base << '/'
-    @site_base = URI.parse(site_base)
+    @site_base = URI.parse(normalize_site_name(site_base))
   end
 
   def set_auth(user,pass)
@@ -48,6 +47,14 @@ class Viewpoint::SPWS::Connection
 
 
   private
+
+
+  # @param [String] site an unnormalized site
+  # @return [String] a normalized site base
+  def normalize_site_name(site)
+    site = site.sub(/default.aspx$/,'')
+    site.end_with?('/') ? site : site << '/'
+  end
 
   def check_response(resp)
     case resp.status
