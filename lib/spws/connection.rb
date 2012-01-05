@@ -52,7 +52,7 @@ class Viewpoint::SPWS::Connection
   # @param [String] site an unnormalized site
   # @return [String] a normalized site base
   def normalize_site_name(site)
-    site = site.sub(/default.aspx$/,'')
+    site = site.sub(/default.aspx$/i,'')
     site.end_with?('/') ? site : site << '/'
   end
 
