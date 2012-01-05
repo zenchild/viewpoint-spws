@@ -35,6 +35,10 @@ module Viewpoint
   end
 end
 
+# ----- Monkey Patches -----
+require 'extensions/string'
+
+# ----- Library Files -----
 require 'spws/connection'
 require 'spws/websvc/web_service_base'
 # Lists Web Service
