@@ -86,10 +86,9 @@ class Viewpoint::SPWS::Lists
   # @option opts [String]  :folder ('') 
   #   Filter document library items for items in the specified folder
   # @yield [builder] Yields a Builder object that can be used to build a CAML Query. See the
-  #   example below on how to use it.
+  #   example on how to use it.
   # @yieldparam [Nokogiro::XML::Builder] builder The builder object used to create the Query
-  # @example The following example shows how to prepare a CAML Query with a block. It
-  #   filters for all objects of ObjectType '0' = Files
+  # @example The following example shows how to prepare a CAML Query with a block. It filters for all objects of ObjectType '0' = Files
   #   items = listws.get_list_items('Shared Documents',:recursive => true) do |b|
   #     b.Query {
   #       b.Where {
@@ -158,6 +157,32 @@ class Viewpoint::SPWS::Lists
   #   be either 'Return' or 'Contiue'
   # @option updates [String] :list_version ('') The version of the list we wish to modify
   # @option updates [String] :version ('') The version of Sharepoint we are acting on
+  # @option updates [Array<Hash>] :item_updates An array of Hashes that specify what to update.
+  #   Each hash needs an :id key to specify the item ID and a :command key that specifies
+  #   "New", "Update" or "Delete". All other keys are field names in either CamelCase or
+  #   ruby_case with values to set them to.
+  #   {:item_updates =>
+  #     [{:id => 95, :command => 'Update', :status => 'Completed'},
+  #     {:id => 107, :command => 'Update', :title => "Test"}]}
+  # @yield [builder] Yields a Builder object that can be used to build a Batch request. See the
+  #   example on how to use it. For more information on Batch requests:
+  #   @see http://msdn.microsoft.com/en-us/library/dd585784(v=office.11).aspx
+  # @yieldparam [Nokogiro::XML::Builder] builder The builder object used to create the Batch
+  # @example The following example shows how to prepare a Batch request with a block. It updates a Task item to Status 'Completed'.
+  #   item_id = 95
+  #   listws.update_list_items('Task List') do |b|
+  #     b.Method(:ID => 1, :Cmd => 'Update') do
+  #       b.Field(item_id,:Name => 'ID')
+  #       b.Field("Completed", :Name => 'Status')
+  #     end
+  #   end
+  # @example How to Add and Delete via passed parameters
+  #   updates = [
+  #     {:id => "New", :command => "New", :title => "Test Task"},
+  #     {:id => 'New',:command => 'New', :title => 'Test Task 2'},
+  #     {:id => 98,:command => 'Delete'},
+  #   ]
+  #   resp = listws.update_list_items('Task List',:item_updates => updates)
   def update_list_items(list, updates = {})
     # Set Default values
     updates[:view_name] = '' unless updates.has_key?(:view_name)
@@ -178,6 +203,19 @@ class Viewpoint::SPWS::Lists
                           :ListVersion  => updates[:list_version],
                           :Version  => updates[:version]) {
               builder.parent.default_namespace = ''
+
+              # First format passed item_updates
+              updates[:item_updates] && updates[:item_updates].each_with_index do |iu,idx|
+                iu = iu.clone
+                builder.Method(:ID => "VP_IDX#{idx}", :Cmd => iu.delete(:command)) do
+                  builder.Field(iu.delete(:id), :Name => 'ID')
+                  iu.each_pair do |k,v|
+                    builder.Field(v, :Name => k.to_s.camel_case)
+                  end
+                end
+              end
+
+              # Now include block-passed updates
               if block_given?
                 yield builder
               end
@@ -188,7 +226,6 @@ class Viewpoint::SPWS::Lists
     end
 
     soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
-    ns = {"xmlns"=> @default_ns}
   end
 
 
