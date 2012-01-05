@@ -27,6 +27,18 @@ class Viewpoint::SPWS::UserGroup
     super
   end
 
+  def get_all_user_collection_from_web
+    soapmsg = build_soap_envelope do |type, builder|
+      if(type == :header)
+      else
+        builder.GetAllUserCollectionFromWeb {
+          builder.parent.default_namespace = @default_ns
+        }
+      end
+    end
+    soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
+  end
+
   # Returns information about a specified user
   # @param [String] user A username to retrieve infor for. It must be of the form
   #   DOMAIN\username
@@ -40,8 +52,7 @@ class Viewpoint::SPWS::UserGroup
         }
       end
     end
-    send_soap_request(soapmsg.doc.to_xml)
-    #soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
+    soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
   end
 
   # Get user logins from e-mail addresses
