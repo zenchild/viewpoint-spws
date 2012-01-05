@@ -20,7 +20,7 @@
 # @see 
 class Viewpoint::SPWS::ListItem
 
-  attr_reader :file_name, :file_ref, :editor, :guid, :object_type
+  attr_reader :id, :file_name, :file_ref, :editor, :guid, :object_type
   attr_reader :created_date, :modified_date
 
   # @param [Nokogiri::XML::Element] xml the List element we are building from
@@ -36,6 +36,7 @@ class Viewpoint::SPWS::ListItem
   # @param[Nokogiri::XML::Element] xml
   def parse_xml_fields(xml)
     @xmldoc = xml
+    set_field   :@id, 'ows_ID'
     set_field   :@file_name, 'ows_LinkFilename'
     set_field   :@meta_info, 'ows_MetaInfo'
     set_field   :@link_title, 'ows_LinkTitle'
