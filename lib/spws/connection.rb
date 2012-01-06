@@ -15,6 +15,10 @@ class Viewpoint::SPWS::Connection
     @httpcli.set_auth(@site_base.to_s, user, pass)
   end
 
+  def copy_ws
+    Copy.new(self)
+  end
+
   def lists_ws
     Lists.new(self)
   end

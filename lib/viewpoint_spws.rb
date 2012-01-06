@@ -16,6 +16,7 @@
   limitations under the License.
 =end
 require 'kconv' if(RUBY_VERSION.start_with? '1.9') # bug in rubyntlm with ruby 1.9.x
+require 'base64'
 require 'httpclient'
 require 'uri'
 require 'nokogiri'
@@ -41,6 +42,8 @@ require 'extensions/string'
 # ----- Library Files -----
 require 'spws/connection'
 require 'spws/websvc/web_service_base'
+# Copy Web Service
+require 'spws/websvc/copy'
 # Lists Web Service
 require 'spws/websvc/lists'
 require 'spws/types/list'
