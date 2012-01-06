@@ -31,7 +31,6 @@ class Viewpoint::SPWS::ListItem
 
   private
 
-
   # Parse the fields out of the passed XML document.
   # @param[Nokogiri::XML::Element] xml
   def parse_xml_fields(xml)

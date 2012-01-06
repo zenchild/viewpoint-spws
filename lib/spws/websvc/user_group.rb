@@ -37,6 +37,12 @@ class Viewpoint::SPWS::UserGroup
       end
     end
     soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
+    ns = {'xmlns' => @default_ns}
+    users = []
+    soaprsp.xpath('//xmlns:Users/xmlns:User', ns).each do |li|
+      users << User.new(self,li)
+    end
+    users
   end
 
   # Returns information about a specified user
@@ -53,6 +59,9 @@ class Viewpoint::SPWS::UserGroup
       end
     end
     soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
+    ns = {'xmlns' => @default_ns}
+    user = soaprsp.xpath('//xmlns:GetUserInfo/xmlns:User', ns).first
+    User.new(self,user)
   end
 
   # Get user logins from e-mail addresses
@@ -72,21 +81,14 @@ class Viewpoint::SPWS::UserGroup
           }
         }
       end
-
-      ns = {"xmlns"=> @default_ns}
-      lists = []
-      soaprsp.xpath('//xmlns:Lists/xmlns:List', ns).each do |l|
-        lists << List.new(l)
-      end
-      if(!show_hidden)
-        lists.reject! do |i|
-          i.hidden?
-        end
-      end
-      lists
-
     end
     soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
+    ns = {'xmlns' => @default_ns}
+    logins = {}
+    soaprsp.xpath('//xmlns:GetUserLoginFromEmail/xmlns:User', ns).each do |li|
+      logins[li['Email']] = li['Login']
+    end
+    logins
   end
 
 end
