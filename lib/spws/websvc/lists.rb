@@ -138,7 +138,6 @@ class Viewpoint::SPWS::Lists
       end
     end
     soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
-    ns = {"xmlns"=> @default_ns}
     ns = {'xmlns:z' => "#RowsetSchema"}
     items = []
     soaprsp.xpath('//z:row', ns).each do |li|
