@@ -31,6 +31,7 @@ class Viewpoint::SPWS::Copy
   # @see http://msdn.microsoft.com/en-us/library/copy.copy.copyintoitems(v=office.12).aspx
   # @param [String] srcfile Either a relative or absolute path to the input file
   # @param [Array<String>] tgturls An array of absolute URLs to copy the source to.
+  # @todo parse the return and check for errors
   def copy_into_items(srcfile, tgturls)
     soapmsg = build_soap_envelope do |type, builder|
       if(type == :header)
@@ -55,6 +56,7 @@ class Viewpoint::SPWS::Copy
   # @see http://msdn.microsoft.com/en-us/library/copy.copy.copyintoitemslocal(v=office.12).aspx
   # @param [String] srcurl An absolute URL to the document you want to copy from.
   # @param [Array<String>] tgturls An array of absolute URLs to copy the source to.
+  # @todo parse the return and check for errors
   def copy_into_items_local(srcurl, tgturls)
     soapmsg = build_soap_envelope do |type, builder|
       if(type == :header)

@@ -43,7 +43,7 @@ class Viewpoint::SPWS::Lists
     ns = {"xmlns"=> @default_ns}
     lists = []
     soaprsp.xpath('//xmlns:Lists/xmlns:List', ns).each do |l|
-      lists << List.new(l)
+      lists << List.new(self, l)
     end
     if(!show_hidden)
       lists.reject! do |i|
@@ -71,7 +71,7 @@ class Viewpoint::SPWS::Lists
     end
     soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
     ns = {"xmlns"=> @default_ns}
-    List.new(soaprsp.xpath('//xmlns:GetListResult/xmlns:List', ns).first)
+    List.new(self, soaprsp.xpath('//xmlns:GetListResult/xmlns:List', ns).first)
   end
 
   # Get List Items based on certain parameters
@@ -141,7 +141,7 @@ class Viewpoint::SPWS::Lists
     ns = {'xmlns:z' => "#RowsetSchema"}
     items = []
     soaprsp.xpath('//z:row', ns).each do |li|
-      items << ListItem.new(li)
+      items << ListItem.new(self, li)
     end
     items
   end

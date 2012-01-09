@@ -22,8 +22,10 @@ class Viewpoint::SPWS::List
 
   attr_reader :guid, :title, :description, :created, :modified
 
+  # @param [Viewpoint::SPWS::List] ws The webservice instance this List spawned from
   # @param [Nokogiri::XML::Element] xml the List element we are building from
-  def initialize(xml)
+  def initialize(ws, xml)
+    @ws = ws
     @guid   = xml['ID']
     @title  = xml['Title']
     @description = xml['Description']
