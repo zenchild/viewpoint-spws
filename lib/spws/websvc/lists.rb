@@ -27,6 +27,93 @@ class Viewpoint::SPWS::Lists
     super
   end
 
+  # Add a List to this site.
+  # @see http://msdn.microsoft.com/en-us/library/lists.lists.addlist(v=office.12).aspx
+  # @param [String] name A name for the List
+  # @param [String] desc A description of the List
+  # @param [Integer] templ_id The template type for this List. See the Microsoft docs for
+  #   additional information.
+  # @return [Viewpoint::SPWS::List] The new List object
+  def add_list(name, desc, templ_id)
+    soapmsg = build_soap_envelope do |type, builder|
+      if(type == :header)
+      else
+        builder.AddList {
+          builder.parent.default_namespace = @default_ns
+          builder.listName(name)
+          builder.description(desc)
+          builder.templateID(templ_id)
+        }
+      end
+    end
+    soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
+    ns = {"xmlns"=> @default_ns}
+    List.new(self, soaprsp.xpath('//xmlns:AddListResult/xmlns:List', ns).first)
+  end
+
+  # Add a List to this site from a feature ID.
+  # @see http://msdn.microsoft.com/en-us/library/lists.lists.addlistfromfeature(v=office.12).aspx
+  # @param [String] name A name for the List
+  # @param [String] desc A description of the List
+  # @param [String] feature_id The GUID of the feature ID.
+  # @param [Integer] templ_id The template type for this List. See the Microsoft docs for
+  #   additional information.
+  # @return [Viewpoint::SPWS::List] The new List object
+  def add_list_from_feature(name, desc, feature_id, templ_id)
+    soapmsg = build_soap_envelope do |type, builder|
+      if(type == :header)
+      else
+        builder.AddListFromFeature {
+          builder.parent.default_namespace = @default_ns
+          builder.listName(name)
+          builder.description(desc)
+          builder.featureID(feature_id)
+          builder.templateID(templ_id)
+        }
+      end
+    end
+    soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
+    ns = {"xmlns"=> @default_ns}
+    List.new(self, soaprsp.xpath('//xmlns:AddListFromFeatureResult/xmlns:List', ns).first)
+  end
+
+  # Delete a list from this site.
+  # @param [String] name Either the name or the GUID of the list
+  # @todo Work out the return value
+  def delete_list(name)
+    soapmsg = build_soap_envelope do |type, builder|
+      if(type == :header)
+      else
+        builder.DeleteList {
+          builder.parent.default_namespace = @default_ns
+          builder.listName(name)
+        }
+      end
+    end
+    soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
+    #ns = {"xmlns"=> @default_ns}
+  end
+
+  # Returns a collection of content type definition schemas
+  # @see http://msdn.microsoft.com/en-us/library/lists.lists.getlistcontenttypes(v=office.12).aspx
+  # @param [String] name Either the name or the GUID of the list
+  # @param [String] content_type_id (nil) The content type ID. I'm still not clear on what specifying
+  #   this value does. In my limitted testing it does not seem to have an effect on the output.
+  # @todo Work out the return value
+  def get_list_content_types(name, content_type_id = nil)
+    soapmsg = build_soap_envelope do |type, builder|
+      if(type == :header)
+      else
+        builder.GetListContentTypes {
+          builder.parent.default_namespace = @default_ns
+          builder.listName(name)
+          builder.contentTypeId(content_type_id)
+        }
+      end
+    end
+    soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
+  end
+
   # Returns all the lists for a Sharepoint site.
   # @param [Boolean] show_hidden Whether or not to show hidden lists. Default = false
   # @see http://msdn.microsoft.com/en-us/library/lists.lists.getlistcollection(v=office.12).aspx
@@ -144,6 +231,88 @@ class Viewpoint::SPWS::Lists
       items << ListItem.new(self, li)
     end
     items
+  end
+
+  # Get List Items changes from a given change token
+  # @see http://msdn.microsoft.com/en-us/library/lists.lists.getlistitemchangessincetoken(v=office.12).aspx
+  # @param [String] list title or the GUID for the list
+  # @param [String] token (nil) The change token or nil to get all
+  # @param [Hash] opts
+  # @option opts [String] :view_name ('') GUID for the view surrounded by curly braces 
+  #   If nothing is passed it used the default of the View
+  # @option opts [String] :row_limit ('') A String representing the number of rows to return.
+  # @option opts [Boolean] :recursive (true) If true look in subfolders as well as root
+  # @option opts [Boolean] :date_in_utc (true) If true return dates in UTC
+  # @option opts [String]  :folder ('') 
+  #   Filter document library items for items in the specified folder
+  # @yield [builder] Yields a Builder object that can be used to build a CAML Query. See the
+  #   example on how to use it.
+  # @yieldparam [Nokogiro::XML::Builder] builder The builder object used to create the Query
+  # @example The following example shows how to prepare a CAML Query with a block. It filters for all objects of ObjectType '0' = Files
+  #   items = listws.get_list_items('Shared Documents',:recursive => true) do |b|
+  #     b.Query {
+  #       b.Where {
+  #         b.Eq {
+  #           b.FieldRef(:Name => 'FSObjType')
+  #           b.Value(0, :Type => 'Integer')
+  #         }
+  #       }
+  #     }
+  #   end
+  # @return [Hash] returns a Hash with the keys :last_change_token, which contains a String
+  #   that holds a change token that may be used in subsequent calls, and :items which holds
+  #   an Array of ListItem objects.
+  def get_list_item_changes_since_token(list, token=nil, opts = {})
+    # Set Default values
+    opts[:recursive] = true unless opts.has_key?(:recursive)
+    opts[:view_name] = '' unless opts.has_key?(:view_name)
+    opts[:row_limit] = '' unless opts.has_key?(:row_limit)
+    opts[:date_in_utc] = true unless opts.has_key?(:date_in_utc)
+    opts[:folder] = '' unless opts.has_key?(:folder)
+
+    soapmsg = build_soap_envelope do |type, builder|
+      if(type == :header)
+      else
+        builder.GetListItemChangesSinceToken {
+          builder.parent.default_namespace = @default_ns
+          builder.listName(list)
+          builder.viewName(opts[:view_name])
+          builder.rowLimit(opts[:row_limit])
+
+          if block_given?
+            builder.query {
+              builder.parent.default_namespace = ''
+              yield builder
+            }
+          end
+
+          builder.queryOptions {
+            builder.QueryOptions {
+              builder.parent.default_namespace = ''
+              builder.Folder(opts[:folder])
+              builder.ViewAttributes(:Scope => 'Recursive') if opts[:recursive]
+              builder.DateInUtc('True') if opts[:date_in_utc]
+              builder.IncludeAttachmentUrls('True')
+            }
+          }
+
+          builder.changeToken(token)
+          # @todo Is this worth supporting???
+          #builder.contains()
+        }
+      end
+    end
+    soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
+    ns = {'xmlns:z' => "#RowsetSchema",
+         'xmlns:rs' => "urn:schemas-microsoft-com:rowset",
+         'xmlns'    => @default_ns,
+    }
+    items = []
+    soaprsp.xpath('//rs:data/z:row', ns).each do |li|
+      items << ListItem.new(self, li)
+    end
+    changes = soaprsp.xpath('//xmlns:GetListItemChangesSinceTokenResult/xmlns:listitems/xmlns:Changes',ns).first
+    {:last_change_token => changes['LastChangeToken'], :items => items}
   end
 
   # Adds, deletes, or updates the specified items in a list
