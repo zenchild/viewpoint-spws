@@ -20,7 +20,7 @@
 # @see http://msdn.microsoft.com/en-us/library/ms434081(v=office.12).aspx
 class Viewpoint::SPWS::List
 
-  attr_reader :guid, :title, :description, :created, :modified
+  attr_reader :guid, :title, :description, :created, :modified, :server_template, :feature_id, :xmldoc
 
   # @param [Viewpoint::SPWS::List] ws The webservice instance this List spawned from
   # @param [Nokogiri::XML::Element] xml the List element we are building from
@@ -30,10 +30,13 @@ class Viewpoint::SPWS::List
     @title  = xml['Title']
     @description = xml['Description']
     @hidden = (xml['Hidden'] == 'True')
-    @created = xml['Created']
-    @modified = xml['Modified']
+    @created = DateTime.parse(xml['Created'])
+    @modified = DateTime.parse(xml['Modified'])
+    @last_deleted = DateTime.parse(xml['LastDeleted'])
     @item_count = xml['ItemCount']
-    #@xmldoc = xml
+    @server_template = xml['ServerTemplate'].to_i
+    @feature_id = xml['FeatureId']
+    @xmldoc = xml
   end
 
   def hidden?
