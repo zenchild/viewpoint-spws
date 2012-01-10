@@ -8,6 +8,8 @@ class Viewpoint::SPWS::Connection
   def initialize(site_base)
     @log = Logging.logger[self.class.name.to_s.to_sym]
     @httpcli = HTTPClient.new
+    # Up the keep-alive so we don't have to do the NTLM dance as often.
+    @httpcli.keep_alive_timeout = 60
     @site_base = URI.parse(normalize_site_name(site_base))
   end
 
