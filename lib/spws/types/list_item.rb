@@ -22,6 +22,7 @@ class Viewpoint::SPWS::ListItem
 
   attr_reader :id, :file_name, :file_ref, :editor, :guid, :object_type
   attr_reader :created_date, :modified_date
+  attr_reader :title, :link_title, :status, :priority
 
   # @param [Viewpoint::SPWS::List] ws The webservice instance this ListItem spawned from
   # @param [Nokogiri::XML::Element] xml the List element we are building from

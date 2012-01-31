@@ -51,3 +51,5 @@ require 'spws/types/list_item'
 # User and Groups Web Service
 require 'spws/websvc/user_group'
 require 'spws/types/user'
+
+require 'spws/spws_client'
