@@ -39,6 +39,11 @@ class Viewpoint::SPWS::List
     @xmldoc = xml
   end
 
+  # Return the items in this List
+  def items
+    @ws.get_list_items(@guid)
+  end
+
   def hidden?
     @hidden
   end
