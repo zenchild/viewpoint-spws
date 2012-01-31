@@ -17,19 +17,8 @@ class Viewpoint::SPWS::Connection
     @httpcli.set_auth(@site_base.to_s, user, pass)
   end
 
-  def copy_ws
-    Copy.new(self)
-  end
-
-  def lists_ws
-    Lists.new(self)
-  end
-
-  def usergroup_ws
-    UserGroup.new(self)
-  end
-
-  # Authenticate to the web service
+  # Authenticate to the web service. You don't have to do this because
+  # authentication will happen on the first request if you don't do it here.
   # @return [Boolean] true if authentication is successful, false otherwise
   def authenticate(websvc)
     self.get(websvc) && true
