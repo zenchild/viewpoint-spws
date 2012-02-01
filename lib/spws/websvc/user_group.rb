@@ -18,8 +18,8 @@
 
 # This class represents the Sharepoint User and Groups Web Service.
 # @see http://msdn.microsoft.com/en-us/library/ms772647(v=office.12).aspx
-class Viewpoint::SPWS::UserGroup
-  include Viewpoint::SPWS::WebServiceBase
+class Viewpoint::SPWS::Websvc::UserGroup
+  include Viewpoint::SPWS::Websvc::WebServiceBase
 
   def initialize(spcon)
     @default_ns = 'http://schemas.microsoft.com/sharepoint/soap/directory/'

@@ -17,11 +17,11 @@
 =end
 
 # This class represents a Sharepoint User Item returned from the UserGroup Web Service
-class Viewpoint::SPWS::User
+class Viewpoint::SPWS::Types::User
 
   attr_reader :id, :sid, :name, :login_name, :email, :notes, :flags
 
-  # @param [Viewpoint::SPWS::UserGroup] ws The webservice instance this user spawned from
+  # @param [Viewpoint::SPWS::Websvc::UserGroup] ws The webservice instance this user spawned from
   # @param [Nokogiri::XML::Element] xml the List element we are building from
   def initialize(ws, xml)
     @ws = ws

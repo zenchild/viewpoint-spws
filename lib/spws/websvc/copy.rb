@@ -18,8 +18,8 @@
 
 # This class represents the Sharepoint Copy Web Service.
 # @see http://msdn.microsoft.com/en-us/library/copy(v=office.12).aspx
-class Viewpoint::SPWS::Copy
-  include Viewpoint::SPWS::WebServiceBase
+class Viewpoint::SPWS::Websvc::Copy
+  include Viewpoint::SPWS::Websvc::WebServiceBase
 
   def initialize(spcon)
     @default_ns  = 'http://schemas.microsoft.com/sharepoint/soap/'

@@ -27,11 +27,15 @@ require 'pathname'
 module Viewpoint
   module SPWS
     attr_reader :logger
-    Logging.logger.root.level = :debug
+    Logging.logger.root.level = :info
     Logging.logger.root.appenders = Logging.appenders.stdout
 
     def self.root_logger
       Logging.logger.root
+    end
+
+    def self.set_log_level(level)
+      Logging.logger.root.level = level
     end
   end
 end
@@ -46,6 +50,7 @@ require 'spws/websvc/web_service_base'
 require 'spws/websvc/copy'
 # Lists Web Service
 require 'spws/websvc/lists'
+module Viewpoint::SPWS::Types; end
 require 'spws/types/list'
 require 'spws/types/list_item'
 # User and Groups Web Service

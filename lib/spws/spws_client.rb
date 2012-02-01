@@ -14,15 +14,15 @@ class Viewpoint::SPWSClient
   end
 
   def copy_ws
-    @copyws ||= Copy.new(@con)
+    @copyws ||= Websvc::Copy.new(@con)
   end
 
   def lists_ws
-    @listsws ||= Lists.new(@con)
+    @listsws ||= Websvc::Lists.new(@con)
   end
 
   def usergroup_ws
-    @usergroupws ||= UserGroup.new(@con)
+    @usergroupws ||= Websvc::UserGroup.new(@con)
   end
 
 
@@ -54,7 +54,7 @@ class Viewpoint::SPWSClient
   # Retrieve a List object
   # @param [String] list title or the GUID for the list
   def get_list(list)
-    lists_ws.get_list('Task List')
+    lists_ws.get_list(list)
   end
 
   # Add a List to thiis site

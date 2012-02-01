@@ -17,46 +17,50 @@
 =end
 
 # This module represents the common elements of Sharepoint Web Services
-module Viewpoint::SPWS::WebServiceBase
-  include Viewpoint::SPWS
+module Viewpoint::SPWS::Websvc
+  module WebServiceBase
+    include Viewpoint::SPWS
 
-  NAMESPACES = {
-    'xmlns:soap'  => 'http://www.w3.org/2003/05/soap-envelope',
-    'xmlns:xsi'   => 'http://www.w3.org/2001/XMLSchema-instance',
-    'xmlns:xsd'   => 'http://www.w3.org/2001/XMLSchema',
-  }.freeze
+    NAMESPACES = {
+      'xmlns:soap'  => 'http://www.w3.org/2003/05/soap-envelope',
+      'xmlns:xsi'   => 'http://www.w3.org/2001/XMLSchema-instance',
+      'xmlns:xsd'   => 'http://www.w3.org/2001/XMLSchema',
+    }.freeze
 
-  # @param [Viewpoint::SPWS::Connection] spcon A connection to a Sharepoint Site
-  def initialize(spcon)
-    @log = Logging.logger[self.class.name.to_s.to_sym]
-    @spcon = spcon
-    raise "Auth failure" unless(@spcon.authenticate(@ws_endpoint))
-  end
+    attr_reader :spcon
+
+    # @param [Viewpoint::SPWS::Connection] spcon A connection to a Sharepoint Site
+    def initialize(spcon)
+      @log = Logging.logger[self.class.name.to_s.to_sym]
+      @spcon = spcon
+      raise "Auth failure" unless(@spcon.authenticate(@ws_endpoint))
+    end
 
 
-  private
+    private
 
-  def build_soap_envelope
-    new_ent = Nokogiri::XML::Builder.new do |xml|
-      xml.Envelope(NAMESPACES) do |ent|
-        xml.parent.namespace = xml.parent.namespace_definitions.find{|ns|ns.prefix=="soap"}
-        ent['soap'].Header {
-          yield(:header, ent) if block_given?
-        }
-        ent['soap'].Body {
-          yield(:body, ent) if block_given?
-        }
+    def build_soap_envelope
+      new_ent = Nokogiri::XML::Builder.new do |xml|
+        xml.Envelope(NAMESPACES) do |ent|
+          xml.parent.namespace = xml.parent.namespace_definitions.find{|ns|ns.prefix=="soap"}
+          ent['soap'].Header {
+            yield(:header, ent) if block_given?
+          }
+          ent['soap'].Body {
+            yield(:body, ent) if block_given?
+          }
+        end
       end
     end
-  end
 
-  # Send the SOAP request to the endpoint
-  # @param [String] soapmsg an XML formatted string
-  def send_soap_request(soapmsg)
-    @log.debug "Sending SOAP Request:\n----------------\n#{soapmsg}\n----------------"
-    respmsg = @spcon.post(@ws_endpoint, soapmsg)
-    @log.debug "Received SOAP Response:\n----------------\n#{Nokogiri::XML(respmsg).to_xml}\n----------------"
-    respmsg
-  end
+    # Send the SOAP request to the endpoint
+    # @param [String] soapmsg an XML formatted string
+    def send_soap_request(soapmsg)
+      @log.debug "Sending SOAP Request:\n----------------\n#{soapmsg}\n----------------"
+      respmsg = @spcon.post(@ws_endpoint, soapmsg)
+      @log.debug "Received SOAP Response:\n----------------\n#{Nokogiri::XML(respmsg).to_xml}\n----------------"
+      respmsg
+    end
 
+  end
 end

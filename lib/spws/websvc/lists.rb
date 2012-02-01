@@ -18,8 +18,8 @@
 
 # This class represents the Sharepoint Lists Web Service.
 # @see http://msdn.microsoft.com/en-us/library/ms774654(v=office.12).aspx
-class Viewpoint::SPWS::Lists
-  include Viewpoint::SPWS::WebServiceBase
+class Viewpoint::SPWS::Websvc::Lists
+  include Viewpoint::SPWS::Websvc::WebServiceBase
 
   def initialize(spcon)
     @default_ns  = 'http://schemas.microsoft.com/sharepoint/soap/'
@@ -48,7 +48,7 @@ class Viewpoint::SPWS::Lists
     end
     soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
     ns = {"xmlns"=> @default_ns}
-    List.new(self, soaprsp.xpath('//xmlns:AddListResult/xmlns:List', ns).first)
+    Types::List.new(self, soaprsp.xpath('//xmlns:AddListResult/xmlns:List', ns).first)
   end
 
   # Add a List to this site from a feature ID.
@@ -74,7 +74,7 @@ class Viewpoint::SPWS::Lists
     end
     soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
     ns = {"xmlns"=> @default_ns}
-    List.new(self, soaprsp.xpath('//xmlns:AddListFromFeatureResult/xmlns:List', ns).first)
+    Types::List.new(self, soaprsp.xpath('//xmlns:AddListFromFeatureResult/xmlns:List', ns).first)
   end
 
   # Delete a list from this site.
@@ -130,7 +130,7 @@ class Viewpoint::SPWS::Lists
     ns = {"xmlns"=> @default_ns}
     lists = []
     soaprsp.xpath('//xmlns:Lists/xmlns:List', ns).each do |l|
-      lists << List.new(self, l)
+      lists << Types::List.new(self, l)
     end
     if(!show_hidden)
       lists.reject! do |i|
@@ -156,7 +156,7 @@ class Viewpoint::SPWS::Lists
     end
     soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
     ns = {"xmlns"=> @default_ns}
-    List.new(self, soaprsp.xpath('//xmlns:GetListResult/xmlns:List', ns).first)
+    Types::List.new(self, soaprsp.xpath('//xmlns:GetListResult/xmlns:List', ns).first)
   end
 
   # Get List Items based on certain parameters
@@ -226,7 +226,7 @@ class Viewpoint::SPWS::Lists
     ns = {'xmlns:z' => "#RowsetSchema"}
     items = []
     soaprsp.xpath('//z:row', ns).each do |li|
-      items << ListItem.new(self, li)
+      items << Types::ListItem.new(self, list, li)
     end
     items
   end
@@ -307,7 +307,7 @@ class Viewpoint::SPWS::Lists
     }
     items = []
     soaprsp.xpath('//rs:data/z:row', ns).each do |li|
-      items << ListItem.new(self, li)
+      items << Types::ListItem.new(self, list, li)
     end
     changes = soaprsp.xpath('//xmlns:GetListItemChangesSinceTokenResult/xmlns:listitems/xmlns:Changes',ns).first
     {:last_change_token => changes['LastChangeToken'], :items => items}

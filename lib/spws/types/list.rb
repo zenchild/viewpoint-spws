@@ -18,7 +18,7 @@
 
 # This class represents a Sharepoint List returned from the Lists Web Service
 # @see http://msdn.microsoft.com/en-us/library/ms434081(v=office.12).aspx
-class Viewpoint::SPWS::List
+class Viewpoint::SPWS::Types::List
 
   attr_reader :guid, :title, :description, :created, :modified, :server_template, :feature_id, :xmldoc
 
