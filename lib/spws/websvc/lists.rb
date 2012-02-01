@@ -139,8 +139,6 @@ class Viewpoint::SPWS::Lists
     end
     lists
   end
-  alias :get_lists :get_list_collection
-
 
   # Retrieve a specific Sharepoint List
   # @see http://msdn.microsoft.com/en-us/library/lists.lists.getlist(v=office.12).aspx

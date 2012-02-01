@@ -14,7 +14,7 @@ require 'viewpoint_spws'
 ```ruby
 site = 'https://myspsite/site_a/Default.aspx'
 scli = Viewpoint::SPWSClient.new(site)
-lws = scli.lists_ws # Get the List Web Service
-tasklist = lws.get_list('Task List')
+lists = scli.get_lists  # Retrieve all Lists for this site
+tasks = scli.get_list('Task List') # Retrieve a specific list
 items = tasklist.items # Fetch the individual Tasks
 ```
