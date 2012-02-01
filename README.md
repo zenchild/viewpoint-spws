@@ -6,7 +6,7 @@ Viewpoint for Sharepoint Web Services
 
 ### Connecting
 ```ruby
-require 'viewpoint_spws'
+require 'viewpoint/spws'
 site = 'https://myspsite/site_a/Default.aspx'
 # If using GSSAPI and the 'gssapi' gem you do not need to specify a user/pass
 scli = Viewpoint::SPWSClient.new(site)
