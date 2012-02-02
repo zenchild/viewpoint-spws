@@ -394,6 +394,7 @@ class Viewpoint::SPWS::Websvc::Lists
     end
 
     soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
+    parse_update_list_items(list, soaprsp)
   end
 
 
@@ -426,6 +427,42 @@ class Viewpoint::SPWS::Websvc::Lists
       Types::TasksList.new(self, xmllist)
     else
       Types::List.new(self, xmllist)
+    end
+  end
+
+  def parse_update_list_items(list, soaprsp)
+    updates = {}
+    ns = {'xmlns' => @default_ns, 'xmlns:z' => '#RowsetSchema'}
+    soaprsp.xpath('//xmlns:Results/xmlns:Result',ns).each do |rs|
+      estat = check_update_error(rs.xpath('./xmlns:ErrorCode',ns).first.text)
+      id, status = rs['ID'].split(/,/)
+      case status
+      when 'New'
+        updates[:new] = [] unless updates.has_key?(:new)
+        li = rs.xpath('./z:row',ns).first
+        updates[:new] << Types::ListItem.new(self, list, li)
+      when 'Update'
+        updates[:update] = [] unless updates.has_key?(:update)
+        lu = rs.xpath('./z:row',ns).first
+        attrs = {}
+        lu.attributes.each_pair {|k,v| attrs[k] = v.value}
+        updates[:update] << attrs
+      when 'Delete'
+        updates[:delete] = {} unless updates.has_key?(:delete)
+        updates[:delete][id] = estat
+      else
+        raise "Unknown update return value, #{rs['ID']}"
+      end
+    end
+    updates
+  end
+
+  def check_update_error(code)
+    case code
+    when '0x00000000'
+      true
+    else
+      raise "Error code returned in update_list_items: #{code}"
     end
   end
 
