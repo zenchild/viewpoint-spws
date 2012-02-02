@@ -24,13 +24,15 @@ class Viewpoint::SPWS::Types::TasksList < Viewpoint::SPWS::Types::List
   # Add a Task to this List
   # @param [Hash] opts parameters for this Task
   # @option opts [String] :title The title of this Task
+  # @return [Viewpoint::SPWS::Types::ListItem] The newly added Task
   def add_item!(opts)
     raise "Title argument required" unless opts[:title]
 
     title = opts[:title]
     op = [{ :command => 'New', :id => 'New',
       :title => opts[:title] }]
-    @ws.update_list_items(@guid, :item_updates => op)
+    resp = @ws.update_list_items(@guid, :item_updates => op)
+    resp[:new].first
   end
 
 end
