@@ -52,6 +52,7 @@ class Viewpoint::SPWS::Connection
   end
 
   def check_response(resp)
+    @log.debug "HTTP Response: #{resp.status}"
     case resp.status
     when 200
       resp.body
