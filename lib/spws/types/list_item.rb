@@ -40,6 +40,16 @@ class Viewpoint::SPWS::Types::ListItem
     @ws.update_list_items(@list_id, :item_updates => del)
   end
 
+  # Set a new title for this Item
+  # @param [String] title The new title
+  # @return [String] The new title of the ListItem if the call is successful
+  def rename!(title)
+    upd = [{ :id => @id, :command => 'Update',
+      :title => title,
+    }]
+    resp = @ws.update_list_items(@list_id, :item_updates => upd)
+    @title = resp[:update].first['ows_Title']
+  end
 
   private
 
