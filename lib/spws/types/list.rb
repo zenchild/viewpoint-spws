@@ -17,7 +17,7 @@
 =end
 
 # This class represents a Sharepoint List returned from the Lists Web Service
-# @see http://msdn.microsoft.com/en-us/library/ms434081(v=office.12).aspx
+# @see http://msdn.microsoft.com/en-us/library/ms774810(v=office.12).aspx
 class Viewpoint::SPWS::Types::List
 
   attr_reader :guid, :title, :description, :created, :modified, :server_template, :feature_id, :xmldoc
@@ -37,6 +37,11 @@ class Viewpoint::SPWS::Types::List
     @server_template = xml['ServerTemplate'].to_i
     @feature_id = xml['FeatureId']
     @xmldoc = xml
+  end
+
+  # Delete this List
+  def delete!
+    @ws.delete_list(@guid)
   end
 
   # Return the items in this List
