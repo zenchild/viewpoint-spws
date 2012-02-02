@@ -47,8 +47,9 @@ class Viewpoint::SPWS::Websvc::Lists
       end
     end
     soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
+    return soaprsp
     ns = {"xmlns"=> @default_ns}
-    Types::List.new(self, soaprsp.xpath('//xmlns:AddListResult/xmlns:List', ns).first)
+    new_list(soaprsp.xpath('//xmlns:AddListResult/xmlns:List', ns).first)
   end
 
   # Add a List to this site from a feature ID.
@@ -74,7 +75,7 @@ class Viewpoint::SPWS::Websvc::Lists
     end
     soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
     ns = {"xmlns"=> @default_ns}
-    Types::List.new(self, soaprsp.xpath('//xmlns:AddListFromFeatureResult/xmlns:List', ns).first)
+    new_list(soaprsp.xpath('//xmlns:AddListResult/xmlns:List', ns).first)
   end
 
   # Delete a list from this site.
@@ -130,7 +131,7 @@ class Viewpoint::SPWS::Websvc::Lists
     ns = {"xmlns"=> @default_ns}
     lists = []
     soaprsp.xpath('//xmlns:Lists/xmlns:List', ns).each do |l|
-      lists << Types::List.new(self, l)
+      lists << new_list(l)
     end
     if(!show_hidden)
       lists.reject! do |i|
@@ -156,7 +157,7 @@ class Viewpoint::SPWS::Websvc::Lists
     end
     soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
     ns = {"xmlns"=> @default_ns}
-    Types::List.new(self, soaprsp.xpath('//xmlns:GetListResult/xmlns:List', ns).first)
+    new_list(soaprsp.xpath('//xmlns:GetListResult/xmlns:List', ns).first)
   end
 
   # Get List Items based on certain parameters
@@ -315,6 +316,7 @@ class Viewpoint::SPWS::Websvc::Lists
 
   # Adds, deletes, or updates the specified items in a list
   # @see http://msdn.microsoft.com/en-us/library/lists.lists.updatelistitems(v=office.12).aspx
+  # @see BATCH Operation http://msdn.microsoft.com/en-us/library/ms437562(v=office.12).aspx
   # @param [String] list title or the GUID for the list
   # @param [Hash] updates
   # @option updates [String] :view_name ('') GUID for the view without curly braces 
@@ -413,4 +415,18 @@ class Viewpoint::SPWS::Websvc::Lists
     target = p2.relative_path_from p1
     @spcon.get(target.to_s)
   end
+
+
+  private
+
+  # Parse the SOAP Response and return an appropriate List type
+  def new_list(xmllist)
+    case xmllist['ServerTemplate']
+    when "107"
+      Types::TasksList.new(self, xmllist)
+    else
+      Types::List.new(self, xmllist)
+    end
+  end
+
 end

@@ -52,6 +52,7 @@ require 'spws/websvc/copy'
 require 'spws/websvc/lists'
 module Viewpoint::SPWS::Types; end
 require 'spws/types/list'
+require 'spws/types/tasks_list'
 require 'spws/types/list_item'
 # User and Groups Web Service
 require 'spws/websvc/user_group'
