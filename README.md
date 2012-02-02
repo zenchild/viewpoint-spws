@@ -1,6 +1,6 @@
 Viewpoint for Sharepoint Web Services
 ================================
-This is a Ruby client library for Sharepoint Web Services. If you've used my [Viewpoint library for Exchange Web Services](https://github.com/zenchild/Viewpoint) you will no doubt notice a similar feel to this library.  It however cannot be a one-for-one do to the way Sharepoint splits its web services among man different services.
+This is a Ruby client library for Sharepoint Web Services. If you've used my [Viewpoint library for Exchange Web Services](https://github.com/zenchild/Viewpoint) you will no doubt notice a similar feel to this library.  It however cannot be a one-for-one do to the way Sharepoint splits its web services among many different services.
 
 There is still quite a lot that needs to be done with the model layer. However, if you are a more daring personality the web service back-end is fairly complete for the web services I've chosen to expose thus far. I've also tried to document each back-end method to its fullest and to provide links to the Microsoft docs where I fall short. Documentation should be up to date on [rubydoc.info](http://rubydoc.info/github/zenchild/viewpoint-spws/frames).
 
