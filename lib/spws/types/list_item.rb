@@ -51,6 +51,36 @@ class Viewpoint::SPWS::Types::ListItem
     @title = resp[:update].first['ows_Title']
   end
 
+  # Set the priority of this Item
+  # @param [Symbol] priority The new priority. It must be one of these values:
+  #   :high, :normal, :low
+  # @return [String] The new priority of the ListItem if the call is successful
+  def set_priority!(priority)
+    phash = {:high => '(1) High', :normal => '(2) Normal', :low => '(3) Low'}
+    raise "Invalid priority it must be one of: #{phash.keys.join(', ')}" unless phash[priority]
+    upd = [{ :id => @id, :command => 'Update',
+      :priority => phash[priority],
+    }]
+    resp = @ws.update_list_items(@list_id, :item_updates => upd)
+    @priority = resp[:update].first['ows_Priority']
+  end
+
+  # Set the status of this Item
+  # @param [Symbol] status The new status. It must be one of these values:
+  #   :not_started, :in_progress, :completed, :deferred, :waiting
+  # @return [String] The new status of the ListItem if the call is successful
+  def set_status!(status)
+    shash = {:not_started => 'Not Started', :in_progress => 'In Progress',
+      :completed => 'Completed', :deferred => 'Deferred',
+      :waiting => 'Waiting on someone else'}
+    raise "Invalid status it must be one of: #{shash.keys.join(', ')}" unless shash[status]
+    upd = [{ :id => @id, :command => 'Update',
+      :status => shash[status],
+    }]
+    resp = @ws.update_list_items(@list_id, :item_updates => upd)
+    @status = resp[:update].first['ows_Status']
+  end
+
   private
 
   # Return the full FileRef with the site URL attatched
