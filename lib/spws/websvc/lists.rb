@@ -174,6 +174,8 @@ class Viewpoint::SPWS::Websvc::Lists
   # @yield [builder] Yields a Builder object that can be used to build a CAML Query. See the
   #   example on how to use it.
   # @yieldparam [Nokogiro::XML::Builder] builder The builder object used to create the Query
+  # @option opts [Array<String,Symbol>] :view_fields and array of String or Symbols that
+  #   represent which fields to return with the query.
   # @example The following example shows how to prepare a CAML Query with a block. It filters for all objects of ObjectType '0' = Files
   #   items = listws.get_list_items('Shared Documents',:recursive => true) do |b|
   #     b.Query {
@@ -206,6 +208,17 @@ class Viewpoint::SPWS::Websvc::Lists
             builder.query {
               builder.parent.default_namespace = ''
               yield builder
+            }
+          end
+
+          if(opts[:view_fields])
+            builder.viewFields {
+              builder.ViewFields {
+                builder.parent.default_namespace = ''
+                opts[:view_fields].each do |f|
+                  builder.FieldRef(:Name => f.to_s.camel_case)
+                end
+              }
             }
           end
 

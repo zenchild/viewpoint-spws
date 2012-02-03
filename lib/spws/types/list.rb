@@ -49,6 +49,24 @@ class Viewpoint::SPWS::Types::List
     @ws.get_list_items(@guid)
   end
 
+  # @param [String] item_id The item id for the item you want to retrieve
+  def get_item(item_id)
+    addl_fields = %w{LinkTitle Body AssignedTo Status Priority DueDate PercentComplete}
+
+    i = @ws.get_list_items(@guid, :recursive => true, :view_fields => addl_fields) do |b|
+      b.Query {
+        b.Where {
+          b.Eq {
+            b.FieldRef(:Name => 'ID')
+            b.Value(item_id, :Type => 'Counter')
+          }
+        }
+      }
+    end
+    raise "Returned more than one item for #get_item" if(i.length > 1)
+    i.first
+  end
+
   def hidden?
     @hidden
   end

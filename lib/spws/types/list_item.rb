@@ -20,9 +20,9 @@
 # @see 
 class Viewpoint::SPWS::Types::ListItem
 
-  attr_reader :id, :file_name, :file_ref, :editor, :guid, :object_type
+  attr_reader :id, :body, :file_name, :file_ref, :editor, :guid, :object_type
   attr_reader :created_date, :modified_date, :due_date
-  attr_reader :title, :link_title, :status, :priority
+  attr_reader :title, :link_title, :status, :priority, :percent_complete
 
   # @param [Viewpoint::SPWS::Websvc::List] ws The webservice instance this ListItem spawned from
   # @param [String] list_id The list id that this item belongs to
@@ -69,6 +69,7 @@ class Viewpoint::SPWS::Types::ListItem
     set_field   :@file_name, 'ows_LinkFilename'
     set_field   :@meta_info, 'ows_MetaInfo'
     set_field   :@link_title, 'ows_LinkTitle'
+    set_field   :@body, 'ows_Body'
     set_field   :@title, 'ows_Title'
     set_field   :@status, 'ows_Status'
     set_field   :@priority, 'ows_Priority'
@@ -85,7 +86,6 @@ class Viewpoint::SPWS::Types::ListItem
     set_mfield  :@modified_date, 'ows_Last_x0020_Modified' unless @modified_date
     @xmldoc = nil
   end
-
 
   # Parse a Sharepoint managed field
   # @param [Symbol] vname The instance variable we will set the value to if it exists
