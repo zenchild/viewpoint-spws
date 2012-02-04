@@ -19,6 +19,7 @@
 # This class represents a Sharepoint ListItem returned from the Lists Web Service
 # @see 
 class Viewpoint::SPWS::Types::ListItem
+  include Viewpoint::SPWS::Types
 
   attr_reader :id, :body, :file_name, :file_ref, :editor, :guid, :object_type
   attr_reader :created_date, :modified_date, :due_date
@@ -56,10 +57,9 @@ class Viewpoint::SPWS::Types::ListItem
   #   :high, :normal, :low
   # @return [String] The new priority of the ListItem if the call is successful
   def set_priority!(priority)
-    phash = {:high => '(1) High', :normal => '(2) Normal', :low => '(3) Low'}
-    raise "Invalid priority it must be one of: #{phash.keys.join(', ')}" unless phash[priority]
+    raise "Invalid priority it must be one of: #{PRIORITY.keys.join(', ')}" unless PRIORITY[priority]
     upd = [{ :id => @id, :command => 'Update',
-      :priority => phash[priority],
+      :priority => PRIORITY[priority],
     }]
     resp = @ws.update_list_items(@list_id, :item_updates => upd)
     @priority = resp[:update].first['ows_Priority']
@@ -70,15 +70,21 @@ class Viewpoint::SPWS::Types::ListItem
   #   :not_started, :in_progress, :completed, :deferred, :waiting
   # @return [String] The new status of the ListItem if the call is successful
   def set_status!(status)
-    shash = {:not_started => 'Not Started', :in_progress => 'In Progress',
-      :completed => 'Completed', :deferred => 'Deferred',
-      :waiting => 'Waiting on someone else'}
-    raise "Invalid status it must be one of: #{shash.keys.join(', ')}" unless shash[status]
+    raise "Invalid status it must be one of: #{STATUS.keys.join(', ')}" unless STATUS[status]
     upd = [{ :id => @id, :command => 'Update',
-      :status => shash[status],
+      :status => STATUS[status],
     }]
     resp = @ws.update_list_items(@list_id, :item_updates => upd)
     @status = resp[:update].first['ows_Status']
+  end
+
+  def assign!(user)
+    upd = [{ :id => @id, :command => 'Update',
+      :AssignedTo => user,
+    }]
+
+    resp = @ws.update_list_items(@list_id, :item_updates => upd)
+    @assigned_to = resp[:update].first['ows_AssignedTo']
   end
 
   private

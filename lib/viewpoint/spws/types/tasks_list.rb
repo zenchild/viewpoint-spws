@@ -20,18 +20,38 @@
 # ServerTemplate id of 107 (Tasks).
 # @see http://msdn.microsoft.com/en-us/library/ms774810(v=office.12).aspx
 class Viewpoint::SPWS::Types::TasksList < Viewpoint::SPWS::Types::List
+  include Viewpoint::SPWS::Types
 
   # Add a Task to this List
   # @param [Hash] opts parameters for this Task
   # @option opts [String] :title The title of this Task
+  # @option opts [DateTime] :due_date The date in which this Task is due
+  # @option opts [Symbol] :priority The priority of the Task
+  #   :high, :normal, :low
+  # @option opts [Symbol] :status The status of the Task
+  #   :not_started, :in_progress, :completed, :deferred, :waiting
+  # @option opts [Fixnum] :pct_complete The percentage of completion.
+  #   Must be a number from 0 to 100.
   # @return [Viewpoint::SPWS::Types::ListItem] The newly added Task
   def add_item!(opts)
     raise "Title argument required" unless opts[:title]
+    topts = opts.clone
+    topts[:priority] = :normal unless topts[:priority]
+    topts[:status]   = :not_started unless topts[:status]
+    if(topts[:pct_complete] && !(0..100).include?(topts[:pct_complete]))
+      raise "Invalid :pct_complete #{topts[:pct_complete]}"
+    end
 
-    title = opts[:title]
-    op = [{ :command => 'New', :id => 'New',
-      :title => opts[:title] }]
-    resp = @ws.update_list_items(@guid, :item_updates => op)
+    title = topts[:title]
+    op = { :command => 'New', :id => 'New',
+      :title    => topts[:title],
+      :priority => PRIORITY[topts[:priority]],
+      :status   => STATUS[topts[:status]],
+    }
+    op[:due_date]     = topts[:due_date] if topts[:due_date]
+    op[:percent_complete] = (topts[:pct_complete] * 0.01) if topts[:pct_complete]
+
+    resp = @ws.update_list_items(@guid, :item_updates => [op])
     resp[:new].first
   end
 
