@@ -39,6 +39,7 @@ module Viewpoint
     end
   end
 end
+require 'spws/version'
 
 # ----- Monkey Patches -----
 require 'extensions/string'
