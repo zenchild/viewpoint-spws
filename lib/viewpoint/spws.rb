@@ -39,24 +39,24 @@ module Viewpoint
     end
   end
 end
-require 'spws/version'
+require 'viewpoint/spws/version'
 
 # ----- Monkey Patches -----
 require 'extensions/string'
 
 # ----- Library Files -----
-require 'spws/connection'
-require 'spws/websvc/web_service_base'
+require 'viewpoint/spws/connection'
+require 'viewpoint/spws/websvc/web_service_base'
 # Copy Web Service
-require 'spws/websvc/copy'
+require 'viewpoint/spws/websvc/copy'
 # Lists Web Service
-require 'spws/websvc/lists'
-module Viewpoint::SPWS::Types; end
-require 'spws/types/list'
-require 'spws/types/tasks_list'
-require 'spws/types/list_item'
+require 'viewpoint/spws/websvc/lists'
+require 'viewpoint/spws/types'
+require 'viewpoint/spws/types/list'
+require 'viewpoint/spws/types/tasks_list'
+require 'viewpoint/spws/types/list_item'
 # User and Groups Web Service
-require 'spws/websvc/user_group'
-require 'spws/types/user'
+require 'viewpoint/spws/websvc/user_group'
+require 'viewpoint/spws/types/user'
 
-require 'spws/spws_client'
+require 'viewpoint/spws/spws_client'
