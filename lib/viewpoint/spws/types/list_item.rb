@@ -94,9 +94,11 @@ class Viewpoint::SPWS::Types::ListItem
   end
 
   # Assign this item to a user
+  # @param [Viewpoint::SPWS::Types::User] user The user to assign this ListItem
+  # @todo should I return the String representation of the user or the Types::User?
   def assign!(user)
     upd = [{ :id => @id, :command => 'Update',
-      :AssignedTo => user,
+      :AssignedTo => "#{user.id};##{user.login_name}",
     }]
 
     resp = @ws.update_list_items(@list_id, :item_updates => upd)

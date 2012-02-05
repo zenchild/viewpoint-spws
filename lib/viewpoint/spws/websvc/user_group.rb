@@ -40,7 +40,7 @@ class Viewpoint::SPWS::Websvc::UserGroup
     ns = {'xmlns' => @default_ns}
     users = []
     soaprsp.xpath('//xmlns:Users/xmlns:User', ns).each do |li|
-      users << User.new(self,li)
+      users << Types::User.new(self,li)
     end
     users
   end
@@ -61,11 +61,13 @@ class Viewpoint::SPWS::Websvc::UserGroup
     soaprsp = Nokogiri::XML(send_soap_request(soapmsg.doc.to_xml))
     ns = {'xmlns' => @default_ns}
     user = soaprsp.xpath('//xmlns:GetUserInfo/xmlns:User', ns).first
-    User.new(self,user)
+    Types::User.new(self,user)
   end
 
   # Get user logins from e-mail addresses
+  # @see http://msdn.microsoft.com/en-us/library/ms774890(v=office.12).aspx
   # @param [Array<String>] emails an Array of e-mail addresses to search for
+  # @return [Hash] a hash of email to login mappings
   def get_user_login_from_email(emails)
     soapmsg = build_soap_envelope do |type, builder|
       if(type == :header)

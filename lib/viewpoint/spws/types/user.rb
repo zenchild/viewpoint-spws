@@ -18,8 +18,9 @@
 
 # This class represents a Sharepoint User Item returned from the UserGroup Web Service
 class Viewpoint::SPWS::Types::User
+  include Viewpoint::SPWS::Types
 
-  attr_reader :id, :sid, :name, :login_name, :email, :notes, :flags
+  attr_reader :id, :sid, :name, :login_name, :email, :notes, :flags, :site_user
 
   # @param [Viewpoint::SPWS::Websvc::UserGroup] ws The webservice instance this user spawned from
   # @param [Nokogiri::XML::Element] xml the List element we are building from
@@ -34,10 +35,6 @@ class Viewpoint::SPWS::Types::User
 
   def is_domain_group?
     @is_domain_group
-  end
-
-  def site_user?
-    @site_user
   end
 
   private
@@ -55,10 +52,9 @@ class Viewpoint::SPWS::Types::User
     set_field   :@is_site_admin, 'IsSiteAdmin', 'Boolean'
     set_field   :@is_domain_group, 'IsDomainGroup', 'Boolean'
     set_field   :@flags, 'Flags'
-    @site_user  = (xml['SiteUser'] == 1)
+    set_field   :@site_user, 'SiteUser'
     @xmldoc = nil
   end
-
 
   # Parse a Sharepoint managed field
   # @param [Symbol] vname The instance variable we will set the value to if it exists
