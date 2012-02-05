@@ -3,15 +3,13 @@ require 'spec_helper'
 
 describe 'Test the Sharepoint List web service functionality' do
   before(:all) do
-    con = Viewpoint::SPWS::Connection.new(@conf[:site])
-    con.set_auth(@conf[:user],@conf[:pass])
-    @lws = con.lists_ws
+    @scli = Viewpoint::SPWSClient.new(@conf[:site], @conf[:user], @conf[:pass])
   end
 
   it 'should retrieve the Lists from a given Sharepoint site' do
-    lists = @lws.get_list_collection(true)
+    lists = @scli.get_lists
     lists.should be_an_instance_of(Array)
-    lists.first.should be_an_instance_of(Viewpoint::SPWS::List)
+    lists.first.should be_a_kind_of(Viewpoint::SPWS::Types::List)
   end
 
   it 'should retrieve the Items from a given List'
