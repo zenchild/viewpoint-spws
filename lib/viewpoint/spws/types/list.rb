@@ -40,6 +40,28 @@ class Viewpoint::SPWS::Types::List
     @xmldoc = xml
   end
 
+  # Add a ListItem
+  # @param [Hash] opts options for List creation.
+  def add_item!(opts)
+    op = { :command => 'New', :id => 'New' }
+    opts.keys.each do |k|
+      case k
+      when :priority
+        op[k] = PRIORITY[opts[:priority]]
+      when :status
+        op[k] = STATUS[opts[:status]]
+      when :percent_complete
+        op[k] = opts[k] * 0.01
+      else
+        op[k] = opts[k]
+      end
+    end
+
+    resp = @ws.update_list_items(@guid, :item_updates => [op])
+    resp[:new].first
+  end
+
+
   # Delete this List
   def delete!
     @ws.delete_list(@guid)

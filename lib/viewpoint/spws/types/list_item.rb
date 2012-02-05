@@ -78,6 +78,22 @@ class Viewpoint::SPWS::Types::ListItem
     @status = resp[:update].first['ows_Status']
   end
 
+  # Set the percentage complete of this item.
+  # @param [Fixnum] pct the percent complete of this item
+  # @return [Fixnum] The new percent complete of the ListItem if the call is
+  #   successful
+  def set_percent_complete!(pct)
+    if(!(0..100).include?(pct))
+      raise "Invalid :percent_complete #{topts[:percent_complete]}"
+    end
+    upd = { :id => @id, :command => 'Update',
+      :percent_complete => pct,
+    }
+    resp = @ws.update_list_items(@list_id, :item_updates => [upd])
+    @percent_complete = resp[:update].first['ows_PercentComplete']
+  end
+
+  # Assign this item to a user
   def assign!(user)
     upd = [{ :id => @id, :command => 'Update',
       :AssignedTo => user,
