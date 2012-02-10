@@ -18,4 +18,14 @@ describe 'Test the Sharepoint List web service functionality' do
     items.should be_an_instance_of(Array)
   end
 
+  it 'should retrieve a User given a domain login' do
+    u = @scli.get_user @conf[:user_login]
+    u.should be_an_instance_of(Viewpoint::SPWS::Types::User)
+  end
+
+  it 'should retrieve a User given an e-mail' do
+    u = @scli.get_user @conf[:user_email]
+    u.should be_an_instance_of(Viewpoint::SPWS::Types::User)
+  end
+
 end
