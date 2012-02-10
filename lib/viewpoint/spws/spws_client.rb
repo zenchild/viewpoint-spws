@@ -71,4 +71,19 @@ class Viewpoint::SPWSClient
     lists_ws.delete_list(list)
   end
 
+  # ========= UserGroup Accessor Proxy Methods ========= 
+
+  # Retrieve a user by e-mail
+  # @param [String] user either in e-mail form or DOMAIN\login form. If you
+  #   specify an e-mail there is an additional web service call that needs
+  #   to be made so if you're worried about performance use the DOMAIN\login
+  #   form.
+  # @return [Viewpoint::SPWS::Types::User]
+  def get_user(user)
+    if user =~ /@/
+      ulh = usergroup_ws.get_user_login_from_email [user]
+      user = ulh[user]
+    end
+    usergroup_ws.get_user_info user
+  end
 end
