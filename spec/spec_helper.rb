@@ -1,7 +1,7 @@
 $: << File.dirname(__FILE__) + '/../lib/'
 require 'yaml'
 require 'date'
-require 'viewpoint_spws'
+require 'viewpoint/spws'
 
 # To run these tests put configuration into a file called site_info.yaml
 # --- 

@@ -12,6 +12,10 @@ describe 'Test the Sharepoint List web service functionality' do
     lists.first.should be_a_kind_of(Viewpoint::SPWS::Types::List)
   end
 
-  it 'should retrieve the Items from a given List'
+  it 'should retrieve the Items from a given List' do
+    lists = @scli.get_lists
+    items = lists.first.items
+    items.should be_an_instance_of(Array)
+  end
 
 end
