@@ -31,7 +31,15 @@ class Viewpoint::SPWS::Types::ListItem
   def initialize(ws, list_id, xml)
     @ws = ws
     @list_id = list_id
+    @pending_updates = []
     parse_xml_fields(xml)
+  end
+
+  # Save any pending changes
+  def save!
+    @ws.update_list_items(@list_id, :item_updates => @pending_updates)
+    # @todo check for success before emptying Arry
+    @pending_updates = []
   end
 
   # Delete this ListItem
@@ -129,36 +137,30 @@ class Viewpoint::SPWS::Types::ListItem
     set_field   :@priority, 'ows_Priority'
     set_field   :@percent_complete, 'ows_PercentComplete'
     set_field   :@due_date, 'ows_DueDate'
-    set_mfield  :@assigned_to, 'ows_AssignedTo'
-    set_mfield  :@file_ref, 'ows_FileRef'
-    set_mfield  :@editor, 'ows_Editor'
-    set_mfield  :@guid, 'ows_UniqueId'
-    set_mfield  :@object_type, 'ows_FSObjType'
+    set_field   :@assigned_to, 'ows_AssignedTo'
+    set_field   :@file_ref, 'ows_FileRef'
+    set_field   :@editor, 'ows_Editor'
+    set_field   :@guid, 'ows_UniqueId'
+    set_field   :@object_type, 'ows_FSObjType'
     set_field   :@created_date, 'ows_Created'
     set_field   :@modified_date, 'ows_Modified'
-    set_mfield  :@created_date, 'ows_Created_x0020_Date' unless @created_date
-    set_mfield  :@modified_date, 'ows_Last_x0020_Modified' unless @modified_date
+    set_field   :@created_date, 'ows_Created_x0020_Date' unless @created_date
+    set_field   :@modified_date, 'ows_Last_x0020_Modified' unless @modified_date
     @xmldoc = nil
   end
 
-  # Parse a Sharepoint managed field
-  # @param [Symbol] vname The instance variable we will set the value to if it exists
-  # @param [String] fname The field name to check for
-  def set_mfield(vname, fname)
-    newvar = nil
-    if @xmldoc[fname]
-      newvar = @xmldoc[fname].split(';#').last
-      newvar = transform(newvar)
-    end
-    instance_variable_set vname, newvar
-  end
-
+  # Parse a Sharepoint field or managed field
   # @param [Symbol] vname The instance variable we will set the value to if it exists
   # @param [String] fname The field name to check for
   def set_field(vname, fname)
     newvar = nil
-    if @xmldoc[fname]
-      newvar = @xmldoc[fname]
+    field = @xmldoc[fname]
+    if field
+      if(field =~ /;#/)
+        newvar = @xmldoc[fname].split(';#').last
+      else
+        newvar = field
+      end
       newvar = transform(newvar)
     end
     instance_variable_set vname, newvar
