@@ -30,20 +30,20 @@ class Viewpoint::SPWSClient
 
   # Available list types that can be used for #add_list
   LIST_TYPES = {
-    :announcements  => 104,
-    :contacts       => 105,
-    :custom_list    => 100,
-    :custom_list_for_datasheet => 120,
-    :datasources    => 110,
-    :discussion_board => 108,
+    :custom_list      => 100,
     :document_library => 101,
-    :events         => 106,
-    :form_library   => 115,
-    :issues         => 1100,
-    :links          => 103,
-    :picture_library => 109,
-    :survey         => 102,
-    :tasks          => 107
+    :survey           => 102,
+    :links            => 103,
+    :announcements    => 104,
+    :contacts         => 105,
+    :events           => 106,
+    :tasks            => 107,
+    :discussion_board => 108,
+    :picture_library  => 109,
+    :datasources      => 110,
+    :form_library     => 115,
+    :issues           => 1100,
+    :custom_list_for_datasheet => 120,
   }
 
   # Retrieve all of the viewable lists for this site.
