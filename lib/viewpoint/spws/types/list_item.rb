@@ -31,15 +31,32 @@ class Viewpoint::SPWS::Types::ListItem
   def initialize(ws, list_id, xml)
     @ws = ws
     @list_id = list_id
-    @pending_updates = []
+    @pending_updates  = [] # a place to store updates before #save! is called
+    @update_keys      = {} # the variables to update after #save!
     parse_xml_fields(xml)
   end
 
   # Save any pending changes
   def save!
-    @ws.update_list_items(@list_id, :item_updates => @pending_updates)
+    return true if @pending_updates.empty?
+    resp = @ws.update_list_items(@list_id, :item_updates => @pending_updates)
     # @todo check for success before emptying Arry
-    @pending_updates = []
+    update_local_vars resp[:update][0]
+    @pending_updates.clear
+    true
+    resp
+  end
+
+  # Pass a block of updates that will be committed in one transaction
+  # @example
+  #   li.update do |l|
+  #     l.rename 'New Name'
+  #     l.set_priority :low
+  #     l.set_status :waiting
+  #   end
+  def update
+    yield self if block_given?
+    save!
   end
 
   # Delete this ListItem
@@ -49,68 +66,110 @@ class Viewpoint::SPWS::Types::ListItem
     @ws.update_list_items(@list_id, :item_updates => del)
   end
 
+
   # Set a new title for this Item
   # @param [String] title The new title
-  # @return [String] The new title of the ListItem if the call is successful
-  def rename!(title)
-    upd = [{ :id => @id, :command => 'Update',
+  def rename(title)
+    raise "There is already a pending rename" if @update_keys[:@title]
+    upd = { :id => @id, :command => 'Update',
       :title => title,
-    }]
-    resp = @ws.update_list_items(@list_id, :item_updates => upd)
-    @title = resp[:update].first['ows_Title']
+    }
+    @pending_updates << upd
+    @update_keys[:@title]       = 'ows_Title'
+    @update_keys[:@link_title]  = 'ows_LinkTitle'
+    title
+  end
+
+  # Set a new title for this Item
+  # @see #rename
+  def rename!(title)
+    rename(title)
+    save!
   end
 
   # Set the priority of this Item
   # @param [Symbol] priority The new priority. It must be one of these values:
   #   :high, :normal, :low
-  # @return [String] The new priority of the ListItem if the call is successful
-  def set_priority!(priority)
+  def set_priority(priority)
     raise "Invalid priority it must be one of: #{PRIORITY.keys.join(', ')}" unless PRIORITY[priority]
-    upd = [{ :id => @id, :command => 'Update',
+    raise "There is already a pending priority change" if @update_keys[:@priority]
+    upd = { :id => @id, :command => 'Update',
       :priority => PRIORITY[priority],
-    }]
-    resp = @ws.update_list_items(@list_id, :item_updates => upd)
-    @priority = resp[:update].first['ows_Priority']
+    }
+    @pending_updates << upd
+    @update_keys[:@priority] = 'ows_Priority'
+    priority
+  end
+
+  # Set the priority of this Item
+  # @see #set_priority
+  def set_priority!(priority)
+    set_priority priority
+    save!
   end
 
   # Set the status of this Item
   # @param [Symbol] status The new status. It must be one of these values:
   #   :not_started, :in_progress, :completed, :deferred, :waiting
-  # @return [String] The new status of the ListItem if the call is successful
-  def set_status!(status)
+  def set_status(status)
     raise "Invalid status it must be one of: #{STATUS.keys.join(', ')}" unless STATUS[status]
-    upd = [{ :id => @id, :command => 'Update',
+    raise "There is already a pending status change" if @update_keys[:@status]
+    upd = { :id => @id, :command => 'Update',
       :status => STATUS[status],
-    }]
-    resp = @ws.update_list_items(@list_id, :item_updates => upd)
-    @status = resp[:update].first['ows_Status']
+    }
+    @pending_updates << upd
+    @update_keys[:@status] = 'ows_Status'
+    status
+  end
+
+  # Set the status of this Item
+  # @see #set_status
+  def set_status!(status)
+    set_status(status)
+    save!
   end
 
   # Set the percentage complete of this item.
   # @param [Fixnum] pct the percent complete of this item
-  # @return [Fixnum] The new percent complete of the ListItem if the call is
-  #   successful
-  def set_percent_complete!(pct)
+  def set_percent_complete(pct)
     if(!(0..100).include?(pct))
       raise "Invalid :percent_complete #{topts[:percent_complete]}"
     end
+    raise "There is already a pending percent complete change" if @update_keys[:@percent_complete]
+
     upd = { :id => @id, :command => 'Update',
       :percent_complete => pct,
     }
-    resp = @ws.update_list_items(@list_id, :item_updates => [upd])
-    @percent_complete = resp[:update].first['ows_PercentComplete']
+    @pending_updates << upd
+    @update_keys[:@percent_complete] = 'ows_PercentComplete'
+    pct
+  end
+
+  # Set the percentage complete of this item.
+  # @see #set_percent_complete
+  def set_percent_complete!(pct)
+    set_percent_complete pct
+    save!
   end
 
   # Assign this item to a user
   # @param [Viewpoint::SPWS::Types::User] user The user to assign this ListItem
   # @todo should I return the String representation of the user or the Types::User?
-  def assign!(user)
-    upd = [{ :id => @id, :command => 'Update',
+  def assign(user)
+    raise "There is already a pending assignment" if @update_keys[:@assigned_to]
+    upd = { :id => @id, :command => 'Update',
       :AssignedTo => "#{user.id};##{user.login_name}",
-    }]
+    }
+    @pending_updates << upd
+    @update_keys[:@assigned_to] = 'ows_AssignedTo'
+    user
+  end
 
-    resp = @ws.update_list_items(@list_id, :item_updates => upd)
-    @assigned_to = resp[:update].first['ows_AssignedTo']
+  # Assign this item to a user
+  # @see #assign
+  def assign!(user)
+    assign(user)
+    save!
   end
 
   private
@@ -121,6 +180,16 @@ class Viewpoint::SPWS::Types::ListItem
     url = "#{uri.scheme}://#{uri.host}"
     url << ":#{uri.port}" unless (uri.port == 80 || uri.port == 443)
     url << "/#{@file_ref}"
+  end
+
+  # update the local variables after a #save!.
+  # Changed variables are tracked in @update_keys
+  # @param [Hash] resp The response Hash from a #save!
+  def update_local_vars(resp)
+    @update_keys.each_pair do |k,v|
+      set_field k, v, resp
+    end
+    @update_keys.clear
   end
 
   # Parse the fields out of the passed XML document.
@@ -152,12 +221,13 @@ class Viewpoint::SPWS::Types::ListItem
   # Parse a Sharepoint field or managed field
   # @param [Symbol] vname The instance variable we will set the value to if it exists
   # @param [String] fname The field name to check for
-  def set_field(vname, fname)
+  # @param [#[]] mapsrc A dictionary or Hash like item that contains variable data.
+  def set_field(vname, fname, mapsrc = @xmldoc)
     newvar = nil
-    field = @xmldoc[fname]
+    field = mapsrc[fname]
     if field
       if(field =~ /;#/)
-        newvar = @xmldoc[fname].split(';#').last
+        newvar = mapsrc[fname].split(';#').last
       else
         newvar = field
       end
