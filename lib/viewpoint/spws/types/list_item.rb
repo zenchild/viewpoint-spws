@@ -49,12 +49,12 @@ class Viewpoint::SPWS::Types::ListItem
 
   # Pass a block of updates that will be committed in one transaction
   # @example
-  #   li.update do |l|
+  #   li.update! do |l|
   #     l.rename 'New Name'
   #     l.set_priority :low
   #     l.set_status :waiting
   #   end
-  def update
+  def update!
     yield self if block_given?
     save!
   end

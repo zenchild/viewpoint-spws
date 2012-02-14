@@ -48,7 +48,17 @@ tasks = taskl.items
 ### Creating/Renaming/Deleting a Task (other types of ListItems are forthcoming)
 ```
 t1 = taskl.add_item!(:title => "New Task")
-t1.rename! "Really New Task"
+# Set and call #save!
+t1.rename  'My New Task'
+t1.save!
+# or use the autosave method
+t1.rename! "My Really New Task"
+# or use an auto-saving transaction
+t1.update! do |l|
+  l.rename 'New Name'
+  l.set_priority :low
+  l.set_status :waiting
+end
 t1.delete!
 ```
 
