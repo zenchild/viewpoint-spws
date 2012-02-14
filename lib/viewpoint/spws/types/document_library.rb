@@ -22,14 +22,20 @@
 class Viewpoint::SPWS::Types::DocumentLibrary < Viewpoint::SPWS::Types::List
   include Viewpoint::SPWS::Types
 
-  # Add a Document to this List
-  # @param [Hash] opts parameters for this Document
-  # @option opts [String] :title The title of this Document
-  # @return [Viewpoint::SPWS::Types::ListItem] The newly added Task
-  def add_item!(opts)
-    raise "Title argument required" unless opts[:title]
-
-    super(topts)
+  # @param [Viewpoint::SPWS::Websvc::List] ws The webservice instance this List spawned from
+  # @param [Nokogiri::XML::Element] xml the List element we are building from
+  def initialize(ws, xml)
+    @copy_ws = Viewpoint::SPWS::Websvc::Copy.new(ws.spcon)
+    super
   end
 
+  # Add a Document to this List
+  # @param [Hash] opts parameters for this Document
+  # @option opts [String] :file Path to the file to upload
+  # @return [Viewpoint::SPWS::Types::ListItem] The newly added Task
+  def add_file!(opts)
+    raise "Valid file argument required" unless(opts[:file] && File.exists?(opts[:file]))
+    fqpath = "#{self.path}/#{File.basename(opts[:file])}"
+    @copy_ws.copy_into_items(opts[:file], [fqpath])
+  end
 end

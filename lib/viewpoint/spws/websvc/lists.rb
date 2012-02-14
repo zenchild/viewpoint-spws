@@ -436,6 +436,8 @@ class Viewpoint::SPWS::Websvc::Lists
   # Parse the SOAP Response and return an appropriate List type
   def new_list(xmllist)
     case xmllist['ServerTemplate']
+    when "101"
+      Types::DocumentLibrary.new(self, xmllist)
     when "107"
       Types::TasksList.new(self, xmllist)
     else

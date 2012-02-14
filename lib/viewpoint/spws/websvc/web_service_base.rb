@@ -36,7 +36,6 @@ module Viewpoint::SPWS::Websvc
       raise "Auth failure" unless(@spcon.authenticate(@ws_endpoint))
     end
 
-
     private
 
     def build_soap_envelope

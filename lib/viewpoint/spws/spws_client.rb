@@ -75,7 +75,7 @@ class Viewpoint::SPWSClient
     lists_ws.get_list(list)
   end
 
-  # Add a List to thiis site
+  # Add a List to this site
   # @param [String] name A name for the List
   # @param [String] desc A description of the List
   # @param [Integer] list_type The list template id. Use the LIST_TYPES Hash.
