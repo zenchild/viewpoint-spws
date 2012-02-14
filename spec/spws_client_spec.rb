@@ -6,6 +6,18 @@ describe 'Test the Sharepoint List web service functionality' do
     @scli = Viewpoint::SPWSClient.new(@conf[:site], @conf[:user], @conf[:pass])
   end
 
+  it 'should return the Lists web service' do
+    @scli.lists_ws.should be_an_instance_of Viewpoint::SPWS::Websvc::Lists
+  end
+
+  it 'should return the Copy web service' do
+    @scli.copy_ws.should be_an_instance_of Viewpoint::SPWS::Websvc::Copy
+  end
+
+  it 'should return the UserGroup web service' do
+    @scli.usergroup_ws.should be_an_instance_of Viewpoint::SPWS::Websvc::UserGroup
+  end
+
   it 'should retrieve the Lists from a given Sharepoint site' do
     lists = @scli.get_lists
     lists.should be_an_instance_of(Array)
