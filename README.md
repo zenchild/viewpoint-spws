@@ -46,7 +46,7 @@ tasks = taskl.items
 ```
 
 ### Creating/Renaming/Deleting a Task (other types of ListItems are forthcoming)
-```
+```ruby
 t1 = taskl.add_item!(:title => "New Task")
 # Set and call #save!
 t1.rename  'My New Task'
