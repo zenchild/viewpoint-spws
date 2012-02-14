@@ -54,6 +54,7 @@ require 'viewpoint/spws/websvc/lists'
 require 'viewpoint/spws/types'
 require 'viewpoint/spws/types/list'
 require 'viewpoint/spws/types/tasks_list'
+require 'viewpoint/spws/types/document_library'
 require 'viewpoint/spws/types/list_item'
 # User and Groups Web Service
 require 'viewpoint/spws/websvc/user_group'
