@@ -52,6 +52,12 @@ t1.rename! "Really New Task"
 t1.delete!
 ```
 
+### Upload a file to a DocumentLibrary List
+```ruby
+doclib = scli.get_list 'Personal Documents'
+doclib.add_file! :file => '/path/to/file'
+```
+
 ### My Links
 - [Twitter | https://twitter.com/zentourist](https://twitter.com/#!/zentourist)
 - [BLOG | http://distributed-frostbite.blogspot.com/](http://distributed-frostbite.blogspot.com/)
