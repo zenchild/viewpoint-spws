@@ -21,23 +21,35 @@
 class Viewpoint::SPWS::Types::List
   include Viewpoint::SPWS::Types
 
-  attr_reader :guid, :title, :description, :created, :modified, :server_template, :feature_id, :xmldoc
+  attr_reader :guid, :title, :description, :created, :modified, :server_template,
+    :feature_id, :root_folder
 
-  # @param [Viewpoint::SPWS::List] ws The webservice instance this List spawned from
+  # @param [Viewpoint::SPWS::Websvc::List] ws The webservice instance this List spawned from
   # @param [Nokogiri::XML::Element] xml the List element we are building from
   def initialize(ws, xml)
-    @ws = ws
-    @guid   = xml['ID']
-    @title  = xml['Title']
-    @description = xml['Description']
-    @hidden = (xml['Hidden'] == 'True')
-    @created = DateTime.parse(xml['Created'])
-    @modified = DateTime.parse(xml['Modified'])
-    @last_deleted = DateTime.parse(xml['LastDeleted'])
-    @item_count = xml['ItemCount']
-    @server_template = xml['ServerTemplate'].to_i
-    @feature_id = xml['FeatureId']
-    @xmldoc = xml
+    @ws             = ws
+    @guid           = xml['ID']
+    @title          = xml['Title']
+    @description    = xml['Description']
+    @hidden         = (xml['Hidden'] == 'True')
+    @created        = DateTime.parse(xml['Created'])
+    @modified       = DateTime.parse(xml['Modified'])
+    @last_deleted   = DateTime.parse(xml['LastDeleted'])
+    @item_count     = xml['ItemCount']
+    @server_template= xml['ServerTemplate'].to_i
+    @feature_id     = xml['FeatureId']
+    @root_folder    = xml['RootFolder']
+    #@xmldoc         = xml
+    @list_path      = nil
+  end
+
+  # Return the full-qualified path of this List
+  def path
+    return @list_path if @list_path
+    site = @ws.spcon.site_base
+    @list_path = "#{site.scheme}://#{site.host}"
+    @list_path << ":#{site.port}" unless(site.port == 80 || site.port == 443)
+    @list_path << @root_folder
   end
 
   # Add a ListItem
@@ -60,7 +72,6 @@ class Viewpoint::SPWS::Types::List
     resp = @ws.update_list_items(@guid, :item_updates => [op])
     resp[:new].first
   end
-
 
   # Delete this List
   def delete!
