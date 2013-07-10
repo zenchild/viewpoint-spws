@@ -46,7 +46,7 @@ class Viewpoint::SPWS::Websvc::UserGroup
   end
 
   # Returns information about a specified user
-  # @param [String] user A username to retrieve infor for. It must be of the form
+  # @param [String] user A username to retrieve information for. It must be of the form
   #   DOMAIN\username
   def get_user_info(user)
     soapmsg = build_soap_envelope do |type, builder|

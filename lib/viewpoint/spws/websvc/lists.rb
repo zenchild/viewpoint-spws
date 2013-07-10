@@ -99,7 +99,7 @@ class Viewpoint::SPWS::Websvc::Lists
   # @see http://msdn.microsoft.com/en-us/library/lists.lists.getlistcontenttypes(v=office.12).aspx
   # @param [String] name Either the name or the GUID of the list
   # @param [String] content_type_id (nil) The content type ID. I'm still not clear on what specifying
-  #   this value does. In my limitted testing it does not seem to have an effect on the output.
+  #   this value does. In my limited testing it does not seem to have an effect on the output.
   # @todo Work out the return value
   def get_list_content_types(name, content_type_id = nil)
     soapmsg = build_soap_envelope do |type, builder|
@@ -334,8 +334,8 @@ class Viewpoint::SPWS::Websvc::Lists
   # @param [Hash] updates
   # @option updates [String] :view_name ('') GUID for the view without curly braces 
   #   If nothing is passed it used the default of the View
-  # @option updates [String] :on_error ('Continue') What to do if an error ocurrs. It must
-  #   be either 'Return' or 'Contiue'
+  # @option updates [String] :on_error ('Continue') What to do if an error occurs. It must
+  #   be either 'Return' or 'Continue'
   # @option updates [String] :list_version ('') The version of the list we wish to modify
   # @option updates [String] :version ('') The version of Sharepoint we are acting on
   # @option updates [Array<Hash>] :item_updates An array of Hashes that specify what to update.
@@ -413,7 +413,7 @@ class Viewpoint::SPWS::Websvc::Lists
 
   # ------------------------- Helper Methods ------------------------- #
 
-  # Retrieve a file from Sharepoint. This is not a standard Web Service method, buth
+  # Retrieve a file from Sharepoint. This is not a standard Web Service method, but
   # rather a convenience method that is part of ViewpointSPWS.
   # @param [String] file_ref The fileref property from a ListItem object
   # @return [String] A String representing the bytestream of a file. You should be able
