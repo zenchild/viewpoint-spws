@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 =begin
   This file is part of ViewpointSPWS; the Ruby library for Microsoft Sharepoint Web Services.
 
@@ -59,5 +60,8 @@ require 'viewpoint/spws/types/list_item'
 # User and Groups Web Service
 require 'viewpoint/spws/websvc/user_group'
 require 'viewpoint/spws/types/user'
+# Document versions
+require 'viewpoint/spws/websvc/versions'
+require 'viewpoint/spws/types/version'
 
 require 'viewpoint/spws/spws_client'

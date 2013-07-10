@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 =begin
   This file is part of ViewpointSPWS; the Ruby library for Microsoft Sharepoint Web Services.
 
@@ -41,6 +42,10 @@ class Viewpoint::SPWSClient
 
   def usergroup_ws
     @usergroupws ||= Websvc::UserGroup.new(@con)
+  end
+
+  def versions_ws
+    @versionsws ||= Websvc::Versions.new(@con)
   end
 
 
@@ -103,5 +108,14 @@ class Viewpoint::SPWSClient
       user = ulh[user]
     end
     usergroup_ws.get_user_info user
+  end
+
+
+  # ========= Versions Accessor Proxy Methods ========= 
+
+  # Retrieve the versions for a document
+  # @param [String] The document ref
+  def get_versions(document)
+    versions_ws.get_versions document
   end
 end
