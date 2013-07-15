@@ -62,6 +62,13 @@ end
 t1.delete!
 ```
 
+
+### Retrieve version information about a Document
+```ruby
+versions = scli.get_versions 'Personal Documents/document1.docx'
+```
+
+
 ### Upload a file to a DocumentLibrary List
 ```ruby
 doclib = scli.get_list 'Personal Documents'

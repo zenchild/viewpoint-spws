@@ -40,7 +40,7 @@ class Viewpoint::SPWS::Types::ListItem
   def save!
     return true if @pending_updates.empty?
     resp = @ws.update_list_items(@list_id, :item_updates => @pending_updates)
-    # @todo check for success before emptying Arry
+    # @todo check for success before emptying Array
     update_local_vars resp[:update][0]
     @pending_updates.clear
     true
@@ -174,7 +174,7 @@ class Viewpoint::SPWS::Types::ListItem
 
   private
 
-  # Return the full FileRef with the site URL attatched
+  # Return the full FileRef with the site URL attached
   def full_file_ref
     uri =  @ws.spcon.site_base
     url = "#{uri.scheme}://#{uri.host}"
