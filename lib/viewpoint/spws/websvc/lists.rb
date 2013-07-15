@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 =begin
   This file is part of ViewpointSPWS; the Ruby library for Microsoft Sharepoint Web Services.
 
@@ -261,7 +262,7 @@ class Viewpoint::SPWS::Websvc::Lists
   #   example on how to use it.
   # @yieldparam [Nokogiro::XML::Builder] builder The builder object used to create the Query
   # @example The following example shows how to prepare a CAML Query with a block. It filters for all objects of ObjectType '0' = Files
-  #   items = listws.get_list_items('Shared Documents',:recursive => true) do |b|
+  #   result = listws.get_list_item_changes_since_token('Shared Documents',:recursive => true) do |b|
   #     b.Query {
   #       b.Where {
   #         b.Eq {
@@ -271,6 +272,8 @@ class Viewpoint::SPWS::Websvc::Lists
   #       }
   #     }
   #   end
+  #   items = result[:items]
+  #   last_change_token = result[:last_change_token]
   # @return [Hash] returns a Hash with the keys :last_change_token, which contains a String
   #   that holds a change token that may be used in subsequent calls, and :items which holds
   #   an Array of ListItem objects.
