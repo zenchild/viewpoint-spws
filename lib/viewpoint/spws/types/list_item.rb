@@ -24,6 +24,7 @@ class Viewpoint::SPWS::Types::ListItem
   attr_reader :id, :body, :file_name, :file_ref, :editor, :guid, :object_type
   attr_reader :created_date, :modified_date, :due_date
   attr_reader :title, :link_title, :status, :priority, :percent_complete
+  attr_reader :start_date, :end_date, :recurrence, :all_day_event
 
   # @param [Viewpoint::SPWS::Websvc::List] ws The webservice instance this ListItem spawned from
   # @param [String] list_id The list id that this item belongs to
@@ -213,6 +214,10 @@ class Viewpoint::SPWS::Types::ListItem
     set_field   :@object_type, 'ows_FSObjType'
     set_field   :@created_date, 'ows_Created'
     set_field   :@modified_date, 'ows_Modified'
+    set_field   :@start_date, 'ows_EventDate'
+    set_field   :@end_date, 'ows_EndDate'
+    set_field   :@recurrence, 'ows_fRecurrence'
+    set_field   :@all_day_event, 'ows_fAllDayEvent'
     set_field   :@created_date, 'ows_Created_x0020_Date' unless @created_date
     set_field   :@modified_date, 'ows_Last_x0020_Modified' unless @modified_date
     @xmldoc = nil
