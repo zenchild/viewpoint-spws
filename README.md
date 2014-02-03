@@ -68,6 +68,16 @@ doclib = scli.get_list 'Personal Documents'
 doclib.add_file! :file => '/path/to/file'
 ```
 
+### Download a file from a DocumentLibrary List
+```ruby
+doclib = scli.get_list 'Some Documents'
+doc = doclib.items.first
+doc.content_type
+# => 'text/plain'
+document_contents = doc.download!
+# => "This is just a text file\nDownloaded from sharepoint"
+```
+
 ### My Links
 - [Twitter | https://twitter.com/zentourist](https://twitter.com/#!/zentourist)
 - [BLOG | http://distributed-frostbite.blogspot.com/](http://distributed-frostbite.blogspot.com/)

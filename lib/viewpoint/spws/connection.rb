@@ -30,6 +30,12 @@ class Viewpoint::SPWS::Connection
   def get(websvc)
     check_response( @httpcli.get(@site_base + URI.encode(websvc)) )
   end
+  
+  # Send a GET to the web service
+  # @return [Net::HTTP::Request] object if request is successful (200)
+  def get_raw(websvc)
+    assert_ok_response( @httpcli.get(@site_base + URI.encode(websvc)) )
+  end
 
   # Send a POST to the web service
   # @return [String] If the request is successful (200) it returns the body of
@@ -51,11 +57,11 @@ class Viewpoint::SPWS::Connection
     site.end_with?('/') ? site : site << '/'
   end
 
-  def check_response(resp)
+  def assert_ok_response(resp)
     @log.debug "HTTP Response: #{resp.status}"
     case resp.status
     when 200
-      resp.body
+      resp
     when 302
       # @todo redirect
       raise "Unhandled HTTP Redirect"
@@ -69,6 +75,10 @@ class Viewpoint::SPWS::Connection
     else
       raise "HTTP Error Code: #{resp.status}, Msg: #{resp.body}"
     end
+  end
+  
+  def check_response(resp)
+    assert_ok_response(resp).body
   end
 
   # @param [String] xml to parse the errors from.

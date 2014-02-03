@@ -171,8 +171,21 @@ class Viewpoint::SPWS::Types::ListItem
     assign(user)
     save!
   end
+  
+  # Get the body of the file ref
+  def download!
+    file_ref_response.body
+  end
+  
+  def content_type
+    file_ref_response.headers['Content-Type']
+  end
 
   private
+  
+  def file_ref_response
+    @file_ref_response ||= @ws.spcon.get_raw full_file_ref
+  end
 
   # Return the full FileRef with the site URL attatched
   def full_file_ref
