@@ -1,16 +1,18 @@
 class Viewpoint::SPWS::Connection
   include Viewpoint::SPWS
 
-  attr_reader :site_base
+  attr_reader :site_base, :server_timezone
   # @param [String] site_base the base URL of the site not including the
   #   web service part.
   #   @example https://<site>/mysite/<default.aspx>
-  def initialize(site_base)
+  # @param [TZInfo::Timezone] server_tz Timezone Sharepoint WFE is set to.
+  def initialize(site_base, server_tz = nil)
     @log = Logging.logger[self.class.name.to_s.to_sym]
     @httpcli = HTTPClient.new
     # Up the keep-alive so we don't have to do the NTLM dance as often.
     @httpcli.keep_alive_timeout = 60
     @site_base = URI.parse(normalize_site_name(site_base))
+    @server_timezone = server_tz
   end
 
   def set_auth(user,pass)
@@ -39,7 +41,6 @@ class Viewpoint::SPWS::Connection
     url = (@site_base + websvc).to_s
     check_response( @httpcli.post(url, xmldoc, headers) )
   end
-
 
   private
 

@@ -240,7 +240,7 @@ class Viewpoint::SPWS::Types::ListItem
   def transform(newvar)
     case newvar
     when /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}/ # Transform DateTime
-      return DateTime.parse(newvar)
+      return @ws.parse_time(newvar)
     else
       return newvar
     end

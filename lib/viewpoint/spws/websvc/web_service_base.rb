@@ -30,10 +30,22 @@ module Viewpoint::SPWS::Websvc
     attr_reader :spcon
 
     # @param [Viewpoint::SPWS::Connection] spcon A connection to a Sharepoint Site
-    def initialize(spcon)
+    # @param [TZInfo::Timezone] server_tz Server timezone of Sharepoint WFE
+    def initialize(spcon, server_tz = nil)
+      @server_timezone = server_tz
       @log = Logging.logger[self.class.name.to_s.to_sym]
       @spcon = spcon
       raise "Auth failure" unless(@spcon.authenticate(@ws_endpoint))
+    end
+
+    def server_timezone
+      spcon.server_timezone
+    end
+
+    def parse_time(str)
+      datetime = DateTime.parse(str)
+      datetime = server_timezone.local_to_utc(datetime) if server_timezone
+      datetime
     end
 
     private
