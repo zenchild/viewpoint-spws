@@ -20,14 +20,19 @@
 class Viewpoint::SPWSClient
   include Viewpoint::SPWS
 
+  attr_reader :server_timezone
+
   # Initialize the SPWSClient instance.
   # @param [String] endpoint The SPWS endpoint we will be connecting to
   # @param [String] user The user to authenticate as. If you are using
   #   NTLM or Negotiate authentication you do not need to pass this parameter.
   # @param [String] pass The user password. If you are using NTLM or
   #   Negotiate authentication you do not need to pass this parameter.
-  def initialize(endpoint, user = nil, pass = nil)
-    @con = Connection.new(endpoint)
+  # @param [Boolean] server_tz Set this to a string representing the
+  #   time zone the sharepoint WFE server is set to, e.g. 'Australia/Melbourne'
+  def initialize(endpoint, user = nil, pass = nil, server_tz = nil)
+    @server_timezone = server_tz ? TZInfo::Timezone.get(server_tz) : nil
+    @con = Connection.new(endpoint, @server_timezone)
     @con.set_auth(user,pass) if(user && pass)
   end
 
@@ -42,7 +47,6 @@ class Viewpoint::SPWSClient
   def usergroup_ws
     @usergroupws ||= Websvc::UserGroup.new(@con)
   end
-
 
   # ========= List Accessor Proxy Methods ========= 
 

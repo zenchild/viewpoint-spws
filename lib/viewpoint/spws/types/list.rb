@@ -32,9 +32,9 @@ class Viewpoint::SPWS::Types::List
     @title          = xml['Title']
     @description    = xml['Description']
     @hidden         = (xml['Hidden'] == 'True')
-    @created        = DateTime.parse(xml['Created'])
-    @modified       = DateTime.parse(xml['Modified'])
-    @last_deleted   = DateTime.parse(xml['LastDeleted'])
+    @created        = @ws.parse_time(xml['Created'])
+    @modified       = @ws.parse_time(xml['Modified'])
+    @last_deleted   = @ws.parse_time(xml['LastDeleted'])
     @item_count     = xml['ItemCount']
     @server_template= xml['ServerTemplate'].to_i
     @feature_id     = xml['FeatureId']

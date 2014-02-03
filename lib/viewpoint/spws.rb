@@ -22,6 +22,7 @@ require 'uri'
 require 'nokogiri'
 require 'logging'
 require 'pathname'
+require 'tzinfo'
 
 # This is the base module for all other classes
 module Viewpoint

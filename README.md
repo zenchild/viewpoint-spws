@@ -15,6 +15,8 @@ site = 'https://myspsite/site_a/Default.aspx'
 scli = Viewpoint::SPWSClient.new(site)
 # Otherwise you can specify a user/pass
 scli = Viewpoint::SPWSClient.new(site, user, pass)
+# You can also specify a timezone (more on this below)
+scli = Viewpoint::SPWSClient.new(site, user, pass, 'Australia/Melbourne')
 ```
 
 ### Getting Lists
@@ -67,6 +69,11 @@ t1.delete!
 doclib = scli.get_list 'Personal Documents'
 doclib.add_file! :file => '/path/to/file'
 ```
+
+## Timezones
+SPWS servers return times in the zone the Sharepoint Web Front End (WFE) is configured in. For example, say I have a Sharepoint WFE located in Perth, Australia (GMT+8, no DST), with its system time set to local time. If Sharepoint wishes to express the actual time `2014-01-01T00:00:00Z`, the string `2014-01-01T08:00:00Z` will be returned by the web service, which is incorrect unless the timezone fragment is ignored.
+
+To work around this, a timezone can be specified while creating the SPWS client object. This will cause the times returned by SharePoint to be converted correctly.
 
 ### My Links
 - [Twitter | https://twitter.com/zentourist](https://twitter.com/#!/zentourist)
