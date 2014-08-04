@@ -216,7 +216,7 @@ class Viewpoint::SPWS::Websvc::Lists
               builder.ViewFields {
                 builder.parent.default_namespace = ''
                 opts[:view_fields].each do |f|
-                  builder.FieldRef(:Name => f.to_s.camel_case)
+                  builder.FieldRef(:Name => f.to_s) # .camel_case)
                 end
               }
             }
