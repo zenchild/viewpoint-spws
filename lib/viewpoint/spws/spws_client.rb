@@ -39,6 +39,11 @@ class Viewpoint::SPWSClient
     @listsws ||= Websvc::Lists.new(@con)
   end
 
+  def views_ws
+    @views ||= Websvc::Views.new(@con)
+  end
+
+
   def usergroup_ws
     @usergroupws ||= Websvc::UserGroup.new(@con)
   end
@@ -67,6 +72,11 @@ class Viewpoint::SPWSClient
   # Retrieve all of the viewable lists for this site.
   def get_lists
     lists_ws.get_list_collection
+  end
+
+  # Retrieve all of the viewable list_items for the list.
+  def get_list_items(list, opts = {})
+    lists_ws.get_list_items(list, opts)
   end
 
   # Retrieve a List object
@@ -104,4 +114,14 @@ class Viewpoint::SPWSClient
     end
     usergroup_ws.get_user_info user
   end
+
+  # ========= Views Accessor Proxy Methods =========
+  def get_view_collection(list_name)
+      views_ws.get_view_collection(list_name)
+  end
+
+  def get_view(list_name, view_name)
+      views_ws.get_view(list_name, view_name)
+  end
+
 end
